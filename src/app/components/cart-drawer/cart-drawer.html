@@ -1,0 +1,77 @@
+<div class="cart-overlay" [class.active]="isOpen" (click)="close()"></div>
+
+<div class="cart-drawer" [class.active]="isOpen">
+  <div class="cart-header">
+    <h2>SHOPPING CART ({{ cartItems.length }})</h2>
+    <button mat-icon-button (click)="close()" aria-label="Close cart">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="cart-content" *ngIf="cartItems.length > 0">
+    <div class="cart-items">
+      <div class="cart-item" *ngFor="let item of cartItems">
+        <div class="item-image">
+          <img [src]="item.product.images[0]" [alt]="item.product.name" />
+        </div>
+
+        <div class="item-details">
+          <h3>{{ item.product.name }}</h3>
+          <p class="item-price">{{ item.product.salePrice || item.product.originalPrice }}</p>
+
+          <div class="quantity-controls">
+            <button (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span>{{ item.quantity }}</span>
+            <button
+              (click)="increaseQuantity(item)"
+              [disabled]="item.quantity >= item.product.availableStock"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+
+          @if (item.product.availableStock > 0 && item.product.availableStock <= 5) {
+            <p class="stock-low">Only {{ item.product.availableStock }} left</p>
+          }
+
+          @if (item.quantity >= item.product.availableStock) {
+            <p class="stock-max">Max quantity reached</p>
+          }
+
+          <button class="remove-btn" (click)="removeItem(item)" aria-label="Remove item">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-cart" *ngIf="cartItems.length === 0">
+    <mat-icon>shopping_bag</mat-icon>
+    <h3>Your cart is empty</h3>
+    <p>Add items to get started</p>
+    <button class="btn-continue" (click)="close()">CONTINUE SHOPPING</button>
+  </div>
+
+  <div class="cart-footer" *ngIf="cartItems.length > 0">
+    <div class="subtotal">
+      <span>SUBTOTAL:</span>
+      <span class="amount">{{ total.toFixed(2) }}</span>
+    </div>
+    <p class="shipping-note">Shipping calculated at checkout</p>
+    @if (errorMessage) {
+      <div class="error-message">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+    }
+
+    <button class="btn-checkout" (click)="checkout()" [disabled]="isValidating">
+      {{ isValidating ? 'VALIDATING...' : 'CHECKOUT' }}
+    </button>
+
+    <button class="btn-continue-shopping" (click)="close()">CONTINUE SHOPPING</button>
+  </div>
+</div>

@@ -1,0 +1,324 @@
+.manage-addresses-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+      color: #1a1a1a;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #d4a574;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #c79560;
+        box-shadow: 0 2px 8px rgba(212, 165, 116, 0.3);
+      }
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+
+  .loading,
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+
+    mat-icon {
+      font-size: 80px;
+      width: 80px;
+      height: 80px;
+      color: #ddd;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      margin: 10px 0 20px;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #d4a574;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #c79560;
+      }
+    }
+  }
+
+  .addresses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+
+    .address-card {
+      background: var(--ll-surface);
+      border: 2px solid #e8e0d5;
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      &:hover {
+        border-color: #d4a574;
+        box-shadow: 0 4px 12px rgba(212, 165, 116, 0.15);
+      }
+
+      &.default {
+        border-color: #d4a574;
+        background: linear-gradient(
+          135deg,
+          rgba(212, 165, 116, 0.03) 0%,
+          rgba(212, 165, 116, 0.01) 100%
+        );
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f0f0;
+
+        .header-left {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          flex: 1;
+          min-width: 0;
+
+          .location-icon {
+            color: #d4a574;
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            margin-top: 2px;
+          }
+
+          .title-info {
+            min-width: 0;
+            flex: 1;
+
+            h3 {
+              margin: 0 0 4px;
+              font-size: 16px;
+              font-weight: 600;
+              color: #1a1a1a;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+
+            .label {
+              margin: 0;
+              font-size: 12px;
+              color: #999;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+          }
+        }
+
+        .default-badge {
+          background: #d4a574;
+          color: white;
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 11px;
+          font-weight: 600;
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+      }
+
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .address-details {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          .address-line {
+            margin: 0;
+            line-height: 1.5;
+            color: #333;
+            font-size: 14px;
+
+            &:first-child {
+              font-weight: 500;
+              color: #1a1a1a;
+            }
+          }
+        }
+
+        .contact-details {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+
+          .contact-line {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+
+            mat-icon {
+              font-size: 16px;
+              width: 16px;
+              height: 16px;
+              color: #d4a574;
+            }
+
+            span {
+              flex: 1;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+        }
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+
+        .action-btn {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          padding: 8px 12px;
+          border: none;
+          border-radius: 4px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          white-space: nowrap;
+
+          mat-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+
+          &.primary {
+            background: var(--ll-surface-2);
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
+
+            &:hover {
+              background: #d4a574;
+              color: white;
+              border-color: #d4a574;
+            }
+          }
+
+          &.secondary {
+            background: var(--ll-surface);
+            color: #d4a574;
+            border: 1px solid #d4a574;
+
+            &:hover {
+              background: #d4a574;
+              color: white;
+            }
+          }
+
+          &.danger {
+            background: var(--ll-surface);
+            color: #dc3545;
+            border: 1px solid #e0e0e0;
+
+            &:hover {
+              background: #dc3545;
+              color: white;
+              border-color: #dc3545;
+            }
+          }
+        }
+      }
+
+      @media (max-width: 480px) {
+        padding: 16px;
+
+        .card-actions {
+          flex-direction: column;
+
+          .action-btn {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+
+      h2 {
+        font-size: 20px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

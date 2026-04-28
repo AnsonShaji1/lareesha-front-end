@@ -1,0 +1,97 @@
+<div class="product-detail-page" *ngIf="product">
+  <button mat-icon-button class="back-btn" (click)="goBack()" aria-label="Back">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="detail-wrapper">
+    <div class="detail-content">
+      <div class="image-section">
+        <div class="main-image-wrapper">
+          <div class="main-image"><img [src]="currentImage" [alt]="product?.name" /></div>
+          @if (product.availableStock === 0) {
+            <div class="out-of-stock-overlay">OUT OF STOCK</div>
+          }
+        </div>
+        <div class="image-thumbnails" *ngIf="product.images && product.images.length > 1">
+          <button
+            mat-button
+            *ngFor="let image of product.images; let i = index"
+            class="thumbnail"
+            [class.active]="currentImage === image"
+            (click)="selectImage(image)"
+          >
+            <img [src]="image" [alt]="product.name" />
+          </button>
+        </div>
+      </div>
+      <div class="info-section">
+        <div class="product-header">
+          <h1>{{ product.name }}</h1>
+          <div class="price-wrapper">
+            @if (product && product.salePrice && +product.salePrice < +product.originalPrice) {
+              <span class="sale-price">{{ product.salePrice }}</span>
+              <span class="original-price strikethrough">{{ product.originalPrice }} </span>
+            } @else {
+              <span class="sale-price">{{ product.salePrice }}</span>
+            }
+          </div>
+        </div>
+        <div class="product-description" *ngIf="product.description">
+          <p>{{ product.description }}</p>
+        </div>
+        <div class="product-details">
+          <div class="detail-item">
+            <span class="label"> CATEGORY:</span>
+            <span class="value">{{ product.category?.name }}</span>
+          </div>
+        </div>
+        <div class="quantity-selector">
+          <label>QUANTITY</label>
+          <div class="quantity-controls">
+            <button
+              mat-icon-button
+              (click)="decreaseQuantity()"
+              [disabled]="quantity <= 1 || product.availableStock === 0"
+              aria-label="Decrease quantity"
+            >
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span class="quantity-value">{{ quantity }}</span>
+            <button
+              mat-icon-button
+              (click)="increaseQuantity()"
+              [disabled]="quantity >= product.availableStock || product.availableStock === 0"
+              aria-label="Increase quantity"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          @if (product.availableStock > 0 && product.availableStock <= 5) {
+            <p class="stock-warning">Only {{ product.availableStock }} left in stock</p>
+          }
+        </div>
+        <div class="actions">
+          <button
+            mat-flat-button
+            class="btn-add-to-cart"
+            (click)="addToCart()"
+            [disabled]="product.availableStock === 0"
+          >
+            <mat-icon>shopping_cart</mat-icon>
+            <span class="btn-text">{{
+              product.availableStock > 0 ? 'ADD TO CART' : 'OUT OF STOCK'
+            }}</span>
+          </button>
+          <button
+            mat-icon-button
+            class="btn-wishlist"
+            (click)="toggleWishlist()"
+            [class.active]="isInWishlist"
+            aria-label="Add to wishlist"
+          >
+            <mat-icon>{{ isInWishlist ? 'favorite' : 'favorite_border' }}</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

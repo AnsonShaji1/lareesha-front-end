@@ -1,0 +1,62 @@
+<div class="search-overlay" [class.active]="isOpen" (click)="close()">
+  <div class="search-container" (click)="$event.stopPropagation()">
+    <!-- Close Button -->
+    <div class="search-header">
+      <button mat-icon-button class="close-btn" (click)="close()" aria-label="Close search">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Search Input -->
+    <div class="search-input-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search for products..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+        #searchInput
+      />
+    </div>
+
+    <!-- Search Content -->
+    <div class="search-content">
+      @if (!searchQuery) {
+        <div class="search-hint">
+          <h3>SEARCH PRODUCTS</h3>
+          <p>Type a product name to search.</p>
+        </div>
+      }
+
+      <!-- Results Section -->
+      @if (searchQuery) {
+        <div class="results-section">
+          <h3>PRODUCTS</h3>
+
+          @if (isLoading) {
+            <div class="search-loading">
+              <p>Searching...</p>
+            </div>
+          } @else if (filteredProducts && filteredProducts.length > 0) {
+            <div class="search-results">
+              @for (product of filteredProducts; track product.id) {
+                <button class="result-item" type="button" (click)="openProduct(product.id)">
+                  <img [src]="product.images[0]" [alt]="product.name" class="result-image" />
+                  <div class="result-info">
+                    <p class="result-name">{{ product.name }}</p>
+                    <p class="result-price">{{ product.salePrice || product.originalPrice }}</p>
+                  </div>
+                </button>
+              }
+            </div>
+          } @else if (hasSearched) {
+            <div class="no-results">
+              <p>No products found for "{{ searchQuery }}"</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

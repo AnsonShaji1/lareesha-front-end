@@ -1,0 +1,37 @@
+<div class="drawer-overlay" [class.active]="isOpen" (click)="close()"></div>
+
+<div class="collections-drawer" [class.active]="isOpen">
+  <!-- Header -->
+  <div class="drawer-header">
+    <a routerLink="/" class="logo-link" (click)="close()">
+      <h1 class="logo-text">Lareesha Luxe</h1>
+    </a>
+    <button mat-icon-button class="close-btn" (click)="close()" aria-label="Close collections">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="drawer-tabs">
+    <button class="tab-btn active">ALL COLLECTIONS</button>
+    <a routerLink="/new-in" class="tab-btn" (click)="close()">NEW IN</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="drawer-content">
+    <!-- Collections List -->
+    <div class="collections-list full-width">
+      <h3 class="section-title">Shop by Category</h3>
+      <div class="collection-links">
+        <a
+          *ngFor="let category of categories"
+          [routerLink]="['/category', category.slug]"
+          class="collection-link"
+          (click)="onCategoryClick()"
+        >
+          {{ category.name }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

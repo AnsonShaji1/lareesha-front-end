@@ -1,0 +1,363 @@
+.auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  align-items: center;
+  justify-content: center;
+
+  &.active {
+    display: flex !important;
+    opacity: 1;
+  }
+}
+
+.auth-container {
+  background: var(--ll-surface);
+  width: 90%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideup 0.3s ease;
+}
+
+@keyframes slideup {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--ll-surface);
+  transition: background-color 0.2s var(--ll-ease), color 0.2s var(--ll-ease);
+  pointer-events: auto;
+
+  &:hover {
+    background: var(--ll-gold-soft);
+    color: var(--ll-gold);
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    margin: 0;
+  }
+}
+
+::ng-deep .close-btn .mat-mdc-button-persistent-ripple::before {
+  opacity: 0 !important;
+}
+
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  padding-right: 44px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 16px 14px;
+  background: none;
+  border: none;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  font-family: inherit;
+
+  &.active {
+    color: var(--ll-gold);
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--ll-gold);
+    }
+  }
+
+  &:hover:not(.active) {
+    color: var(--ll-gold-hover);
+  }
+}
+
+.auth-form {
+  padding: 40px 32px;
+
+  h2 {
+    font-size: 21px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+    color: #000;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--ll-muted);
+    margin: 0 0 24px 0;
+  }
+}
+
+.auth-field {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+::ng-deep .auth-field .mat-mdc-text-field-wrapper {
+  background: var(--ll-surface);
+  border-radius: 6px;
+}
+
+::ng-deep .auth-field .mdc-notched-outline__leading,
+::ng-deep .auth-field .mdc-notched-outline__notch,
+::ng-deep .auth-field .mdc-notched-outline__trailing {
+  border-color: var(--ll-border-strong) !important;
+}
+
+::ng-deep .auth-field:hover .mdc-notched-outline__leading,
+::ng-deep .auth-field:hover .mdc-notched-outline__notch,
+::ng-deep .auth-field:hover .mdc-notched-outline__trailing,
+::ng-deep .auth-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .auth-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .auth-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--ll-gold) !important;
+}
+
+::ng-deep .auth-field .mdc-floating-label,
+::ng-deep .auth-field input.mat-mdc-input-element {
+  font-family: var(--ll-font-body);
+  font-size: 14px;
+}
+
+::ng-deep .auth-field .mat-mdc-form-field-infix {
+  min-height: 44px;
+  padding-top: 9px !important;
+  padding-bottom: 9px !important;
+}
+
+::ng-deep .auth-field .mdc-floating-label {
+  font-size: 13px !important;
+}
+
+::ng-deep .auth-field .mdc-floating-label--float-above {
+  color: var(--ll-gold) !important;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  input[type='checkbox'] {
+    margin-top: 4px;
+    cursor: pointer;
+  }
+
+  label {
+    font-size: 13px;
+    color: #666;
+    cursor: pointer;
+    line-height: 1.5;
+  }
+}
+
+.forgot-link {
+  display: inline-block;
+  font-size: 12px;
+  color: #666;
+  text-decoration: none;
+  margin-bottom: 18px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--ll-gold);
+  }
+}
+
+.btn-primary {
+  width: 100%;
+  min-height: 46px;
+  background: var(--ll-gold);
+  color: white;
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mat-filled-button-state-layer-color: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: background 0.3s;
+  font-family: inherit;
+  border-radius: 0;
+
+  &:hover {
+    background: var(--ll-gold-hover);
+  }
+}
+
+// Shared submit-button hook for sign-in and create-account.
+.auth-submit-btn {
+  --mdc-filled-button-container-color: var(--ll-gold);
+  --mdc-filled-button-disabled-container-color: color-mix(in srgb, var(--ll-gold) 45%, #ffffff 55%);
+  --mdc-filled-button-container-shape: 0;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+::ng-deep .auth-submit-btn.mat-mdc-unelevated-button {
+  background-color: var(--ll-gold) !important;
+  color: #ffffff !important;
+}
+
+::ng-deep .auth-submit-btn.mat-mdc-unelevated-button:disabled {
+  background-color: color-mix(in srgb, var(--ll-gold) 45%, #ffffff 55%) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+::ng-deep .btn-primary .mdc-button__label {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.social-divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  color: #999;
+  font-size: 12px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e0e0e0;
+  }
+
+  span {
+    padding: 0 16px;
+  }
+}
+
+.btn-social {
+  width: 100%;
+  min-height: 42px;
+  background: var(--ll-surface);
+  color: var(--ll-gold);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: inherit;
+  border-radius: 6px;
+
+  &:hover {
+    background: var(--ll-surface-2);
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.btn-google {
+  background: var(--ll-gold-soft);
+  border: 1px solid var(--ll-gold-border);
+  color: #1f1f1f;
+
+  &:hover {
+    background: color-mix(in srgb, var(--ll-gold-soft) 65%, #ffffff 35%);
+    border-color: var(--ll-gold);
+  }
+
+  .google-icon {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #4285f4;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #dadce0;
+  }
+}
+
+::ng-deep .btn-social .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+
+.terms-text {
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+  margin-top: 18px;
+  line-height: 1.6;
+
+  a {
+    color: #000;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100vh;
+  }
+
+  .auth-form {
+    padding: 32px 24px;
+  }
+}

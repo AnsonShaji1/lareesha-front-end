@@ -1,0 +1,26 @@
+<div class="category-page">
+  <div class="category-header">
+    <h1>{{ pageTitle }}</h1>
+
+    <p class="category-description">
+      Discover our exquisite collection of {{ pageTitle.toLowerCase() }}
+    </p>
+  </div>
+
+  <app-filter-bar
+    [hideCategory]="true"
+    (filterChange)="onFilterChange($event)"
+    (resetFilters)="onResetFilters()"
+  >
+  </app-filter-bar>
+
+  <app-product-grid
+    [products]="products"
+    [totalCount]="totalCount"
+    [hasMore]="hasMore"
+    [isLoading]="isLoading"
+    (productClick)="openProductDetail($event)"
+    (loadMore)="onLoadMore()"
+  >
+  </app-product-grid>
+</div>

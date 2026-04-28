@@ -1,0 +1,40 @@
+<section class="hero" aria-label="Featured">
+  <div class="hero__media">
+    <img
+      class="hero__image"
+      src="/coverimage.png"
+      alt="Fine gold jewelry, styled in soft light"
+      width="1920"
+      height="1000"
+      fetchpriority="high"
+    />
+    <div class="hero__overlay" aria-hidden="true"></div>
+  </div>
+  <div class="hero__content">
+    <h1 class="hero__title">Made To Match Your Vibe</h1>
+    <p class="hero__sub">Timeless gold pieces—crafted to move with you, day to night.</p>
+    <div class="hero__actions">
+      <button type="button" class="ll-cta ll-cta--primary" (click)="scrollToShop()">Shop now</button>
+      <a class="ll-cta ll-cta--ghost" routerLink="/new-in">Explore collection</a>
+    </div>
+  </div>
+</section>
+
+<div id="shop" class="home-shop">
+  <app-filter-bar
+    [categories]="categories"
+    (filterChange)="onFilterChange($event)"
+    (resetFilters)="onResetFilters()"
+  >
+  </app-filter-bar>
+
+  <app-product-grid
+    [products]="products"
+    [totalCount]="totalCount"
+    [hasMore]="hasMore"
+    [isLoading]="isLoading"
+    (productClick)="openProductDetail($event)"
+    (loadMore)="onLoadMore()"
+  >
+  </app-product-grid>
+</div>

@@ -1,0 +1,75 @@
+<div class="profile-page">
+  <div class="page-header">
+    <h1>Profile Information</h1>
+    <button
+      class="btn-edit"
+      (click)="toggleEdit()"
+      *ngIf="!isEditing"
+      mat-icon-button
+      [matTooltip]="'Edit profile'"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+
+  <!-- Profile Form -->
+  <mat-card class="profile-form-card">
+    <div class="form-group">
+      <mat-form-field appearance="outline" class="profile-field">
+        <mat-label>First Name</mat-label>
+        <input matInput type="text" [(ngModel)]="formData.first_name" [readonly]="!isEditing" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field appearance="outline" class="profile-field">
+        <mat-label>Last Name</mat-label>
+        <input matInput type="text" [(ngModel)]="formData.last_name" [readonly]="!isEditing" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field appearance="outline" class="profile-field">
+        <mat-label>Email Address</mat-label>
+        <input matInput type="email" [(ngModel)]="formData.email" [readonly]="true" />
+      </mat-form-field>
+      <p class="field-hint">Email cannot be changed</p>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field appearance="outline" class="profile-field">
+        <mat-label>Gender</mat-label>
+        <mat-select [(ngModel)]="formData.gender" [disabled]="!isEditing">
+          <mat-option value="">Select Gender</mat-option>
+          <mat-option *ngFor="let option of genderOptions" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field appearance="outline" class="profile-field">
+        <mat-label>Mobile Number</mat-label>
+        <input
+          matInput
+          type="tel"
+          [(ngModel)]="formData.phone"
+          [readonly]="!isEditing"
+          placeholder="Enter mobile number"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions" *ngIf="isEditing">
+      <button mat-flat-button class="btn btn-primary" (click)="saveProfile()" [disabled]="isSaving">
+        <span *ngIf="!isSaving">Save Changes</span>
+        <span *ngIf="isSaving">Saving...</span>
+      </button>
+      <button mat-stroked-button class="btn btn-secondary" (click)="cancel()" [disabled]="isSaving">
+        Cancel
+      </button>
+    </div>
+  </mat-card>
+</div>

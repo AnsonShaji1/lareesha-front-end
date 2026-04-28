@@ -1,0 +1,42 @@
+.new-in-page {
+  padding-top: 0;
+  min-height: 100vh;
+  background: var(--ll-surface);
+}
+
+.page-header {
+  background: var(--ll-banner);
+  border-bottom: 1px solid #ece7e2;
+  text-align: center;
+  padding: 42px 24px 38px;
+
+  h1 {
+    font-size: 44px;
+    text-transform: none;
+    margin: 0 0 8px 0;
+    color: var(--ll-gold);
+  }
+
+  .page-description {
+    font-size: 16px;
+    font-weight: 400;
+    color: #282828;
+    margin: 0;
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    padding: 28px 16px 26px;
+
+    h1 {
+      font-size: 30px;
+    }
+
+    .page-description {
+      font-size: 13px;
+    }
+  }
+}

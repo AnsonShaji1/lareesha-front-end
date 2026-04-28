@@ -1,0 +1,118 @@
+<mat-toolbar class="header">
+  <div class="header-container">
+    <button
+      type="button"
+      class="nav-hamburger"
+      (click)="toggleMobileNav()"
+      [attr.aria-expanded]="isMobileNavOpen"
+      aria-controls="mobile-nav-panel"
+      aria-label="Open navigation menu"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="logo">
+      <h1 class="logo-full">
+        <a routerLink="/">
+          <img src="/lareesha_logo.png" alt="Lareesha Luxe Logo" class="logo-icon" />
+        </a>
+        <a routerLink="/" class="logo-link">Lareesha Luxe</a>
+      </h1>
+      <div class="logo-short">
+        <a routerLink="/">
+          <img src="/lareesha_logo.png" alt="Lareesha Luxe Logo" class="logo-icon" />
+        </a>
+      </div>
+    </div>
+    <nav class="nav-menu">
+      <button class="nav-link collections-btn" (click)="onCollectionsClick()">
+        ALL COLLECTIONS
+      </button>
+      <a routerLink="/new-in" class="nav-link" routerLinkActive="active">NEW IN</a>
+    </nav>
+    <div class="header-actions">
+      <button mat-icon-button aria-label="Search" (click)="onSearchClick()">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        [matBadge]="wishlistItemCount"
+        [matBadgeHidden]="wishlistItemCount === 0"
+        matBadgeColor="accent"
+        aria-label="Wishlist"
+        (click)="onWishlistClick()"
+      >
+        <mat-icon>favorite_border</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        [matBadge]="cartItemCount"
+        [matBadgeHidden]="cartItemCount === 0"
+        matBadgeColor="accent"
+        aria-label="Shopping cart"
+        (click)="onCartClick()"
+      >
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </button>
+      <div class="account-wrapper">
+        <button
+          mat-icon-button
+          aria-label="Account"
+          (click)="onAccountClick()"
+          [class.logged-in]="isAuthenticated"
+        >
+          @if (isAuthenticated) {
+            <div class="user-avatar">{{ getUserInitial() }}</div>
+          } @else {
+            <mat-icon>person outline</mat-icon>
+          }
+        </button>
+        <app-account-menu
+          [isOpen]="isAccountMenuOpen"
+          (closeMenu)="closeAccountMenu()"
+          (signIn)="onSignIn()"
+          (signUp)="onSignup()"
+          (wishlistClick)="onWishlistClick()"
+        >
+        </app-account-menu>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
+
+@if (isMobileNavOpen) {
+  <div
+    class="mobile-nav__backdrop"
+    (click)="closeMobileNav()"
+    role="presentation"
+  ></div>
+}
+<nav
+  id="mobile-nav-panel"
+  class="mobile-nav__panel"
+  [class.mobile-nav__panel--open]="isMobileNavOpen"
+  [attr.aria-hidden]="!isMobileNavOpen"
+>
+  <div class="mobile-nav__header">
+    <span>Menu</span>
+    <button type="button" class="mobile-nav__close" (click)="closeMobileNav()" aria-label="Close menu">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <button type="button" class="mobile-nav__link mobile-nav__link--btn" (click)="onMobileCollections()">
+    All collections
+  </button>
+  <a
+    class="mobile-nav__link"
+    routerLink="/new-in"
+    routerLinkActive="active"
+    (click)="closeMobileNav()"
+  >
+    New in
+  </a>
+  <a class="mobile-nav__link" routerLink="/" (click)="closeMobileNav()">Shop all</a>
+</nav>
+
+<app-collections-drawer [isOpen]="isCollectionsDrawerOpen" (closeDrawer)="closeCollectionsDrawer()">
+</app-collections-drawer>
+<app-wishlist-drawer [isOpen]="isWishlistDrawerOpen" (closeDrawer)="closeWishlistDrawer()">
+</app-wishlist-drawer>

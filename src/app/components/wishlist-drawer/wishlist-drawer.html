@@ -1,0 +1,71 @@
+<div class="wishlist-overlay" [class.active]="isOpen" (click)="close()"></div>
+
+<div class="wishlist-drawer" [class.active]="isOpen">
+  <div class="wishlist-header">
+    <h2>WISHLIST ({{ wishlistItems.length }})</h2>
+    <button mat-icon-button (click)="close()" aria-label="Close wishlist">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Wishlist Items -->
+  @if (wishlistItems.length > 0) {
+    <div class="wishlist-content">
+      <div class="wishlist-items">
+        @for (product of wishlistItems; track product.id) {
+          <div class="wishlist-item">
+            <div class="item-image" (click)="viewProduct(product)">
+              <img [src]="product.images[0]" [alt]="product.name" />
+              @if (product.availableStock === 0) {
+                <div class="out-of-stock-badge">OUT OF STOCK</div>
+              }
+            </div>
+
+            <div class="item-details">
+              <h3 (click)="viewProduct(product)">{{ product.name }}</h3>
+
+              <div class="price-info">
+                @if (product.salePrice && product.salePrice < product.originalPrice) {
+                  <span class="sale-price">${{ product.salePrice }}</span>
+                  <span class="original-price">${{ product.originalPrice }}</span>
+                } @else {
+                  <span class="price">${{ product.originalPrice }}</span>
+                }
+              </div>
+
+              <div class="item-actions">
+                <button
+                  class="btn-add-to-cart"
+                  (click)="moveToCart(product)"
+                  [disabled]="product.availableStock === 0"
+                >
+                  @if (product.availableStock === 0) {
+                    OUT OF STOCK
+                  } @else {
+                    ADD TO CART
+                  }
+                </button>
+              </div>
+            </div>
+
+            <button
+              class="remove-btn"
+              (click)="removeItem(product)"
+              aria-label="Remove from wishlist"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Empty Wishlist -->
+    <div class="empty-wishlist">
+      <mat-icon>favorite_border</mat-icon>
+      <h3>Your wishlist is empty</h3>
+      <p>Save items you love for later</p>
+      <button class="btn-continue" (click)="close()">CONTINUE SHOPPING</button>
+    </div>
+  }
+</div>

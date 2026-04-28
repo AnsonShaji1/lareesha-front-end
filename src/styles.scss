@@ -1,0 +1,302 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$my-primary: mat.m2-define-palette(mat.$m2-gray-palette, 900);
+$my-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+$my-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$my-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $my-primary,
+    accent: $my-accent,
+    warn: $my-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+@include mat.all-component-themes($my-theme);
+
+:root {
+  --ll-font-body: 'Roboto', 'Helvetica Neue', sans-serif;
+  --ll-font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --ll-display-weight: 500;
+  --ll-display-line-height: 1.05;
+  --ll-display-letter-spacing: 0.5px;
+
+  // Light cream page + surfaces (warm jewelry UI — all use tokens, not pure white)
+  --ll-bg: #fbf6ec;
+  --ll-surface: #fffbf5;
+  --ll-surface-2: #f0e8dc;
+  // Slightly deeper cream for hero / category header strips
+  --ll-banner: #f5efe4;
+  --ll-text: #0b0b0b;
+  --ll-muted: #6b6b6b;
+  --ll-border: #e8e2d6;
+  --ll-border-strong: #d4ccbf;
+
+  --ll-radius-sm: 8px;
+  --ll-radius-md: 12px;
+  --ll-radius-lg: 16px;
+
+  --ll-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ll-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  --ll-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  // Premium dark gold (jewelry brand accent) — use for key headings, prices, nav, links
+  --ll-gold: #6b4a1a;
+  --ll-gold-hover: #543810;
+  --ll-gold-pressed: #4a330f;
+  --ll-gold-soft: rgba(107, 74, 26, 0.1);
+  --ll-gold-border: rgba(107, 74, 26, 0.35);
+
+  /* Fixed site header: toolbar row + optional safe-area (notched phones) */
+  --app-header-height: calc(60px + env(safe-area-inset-top, 0px));
+
+  /* Type scale (UI uses body sans; display serif where explicitly applied) */
+  --ll-text-xs: 11px;
+  --ll-text-sm: 13px;
+  --ll-text-md: 15px;
+  --ll-text-lg: 18px;
+  --ll-text-xl: clamp(1.5rem, 1.1rem + 1.2vw, 2.15rem);
+  --ll-text-2xl: clamp(1.85rem, 1.3rem + 1.6vw, 2.75rem);
+}
+
+// Primary CTAs — gold / black brand system
+a.ll-cta,
+button.ll-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 26px;
+  font-family: var(--ll-font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.25s var(--ll-ease),
+    color 0.25s var(--ll-ease),
+    border-color 0.25s var(--ll-ease),
+    box-shadow 0.25s var(--ll-ease),
+    transform 0.2s var(--ll-ease);
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+button.ll-cta {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ll-cta--primary {
+  background: var(--ll-gold);
+  color: #fff;
+  border-color: var(--ll-gold);
+
+  &:hover {
+    background: var(--ll-gold-hover);
+    border-color: var(--ll-gold-hover);
+    box-shadow: 0 6px 24px rgba(107, 74, 26, 0.25);
+  }
+}
+
+.ll-cta--ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+  }
+}
+
+.ll-cta--outline-dark {
+  background: transparent;
+  color: var(--ll-gold);
+  border-color: var(--ll-gold-border);
+
+  &:hover {
+    background: var(--ll-gold-soft);
+    border-color: var(--ll-gold);
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--ll-font-body);
+  margin: 0;
+  padding: 0;
+  background: var(--ll-bg);
+  color: var(--ll-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Keep form/UI controls in readable sans-serif
+button,
+input,
+select,
+textarea {
+  font-family: var(--ll-font-body);
+}
+
+// Use serif only for premium display headings
+h1,
+.ll-display-heading,
+.category-header h1,
+.page-header h1,
+.drawer-header h2 {
+  font-family: var(--ll-font-display);
+  font-weight: var(--ll-display-weight);
+  line-height: var(--ll-display-line-height);
+  letter-spacing: var(--ll-display-letter-spacing);
+  text-rendering: geometricPrecision;
+}
+  
+// Override Material toolbar color
+.mat-toolbar {
+  background: var(--ll-surface) !important;
+  color: black !important;
+}
+
+// Minimal scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ll-surface-2);
+}
+
+::-webkit-scrollbar-thumb {
+  background:#888;
+  border-radius: 4px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+  
+// Notification Snackbar Styles
+.mat-mdc-snack-bar-container {
+  &.snackbar-offset {
+    margin-top: calc(var(--app-header-height) + 8px);
+  }
+
+  &.snackbar-success {
+    --mdc-snackbar-container-color: #106981;
+    --mat-snack-bar-button-color:#ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+
+    .mat-mdc-snack-bar-label {
+      color: white;
+    }
+  
+    .mat-mdc-button {
+      color: white !important;
+    }
+  } 
+  
+  &.snackbar-error {
+    --mdc-snackbar-container-color: #ef4444;
+    --mat-snack-bar-button-color: #ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+
+    .mat-mdc-snack-bar-label {
+      color: white;
+    }
+    .mat-mdc-button {
+      color: white !important;
+    }
+  }
+
+  &.snackbar-warning {
+    --mdc-snackbar-container-color: #f59e0b;
+    --mat-snack-bar-button-color:#ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+  
+    .mat-mdc-snack-bar-label {
+      color: white;
+    }
+    
+    .mat-mdc-button { 
+      color: white !important;
+    }
+  } 
+    
+  &.snackbar-info {
+    --mdc-snackbar-container-color: #3b82f6; 
+    --mat-snack-bar-button-color: #ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+    
+    .mat-mdc-snack-bar-label {
+      color: white;
+    }
+    .mat-mdc-button { 
+      color: white !important;
+    }
+  }
+}
+
+
+// Global Error Message Styling
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background:#fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  animation: slide Down 0.3s ease;
+  
+  mat-icon {
+    color: #dc2626;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  } 
+  
+  p, span {
+    margin: 0;
+    color: #991b1b;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

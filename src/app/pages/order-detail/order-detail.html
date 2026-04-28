@@ -1,0 +1,134 @@
+<div class="order-detail-container">
+  <!-- Breadcrumb Navigation -->
+  <!-- <app-breadcrumb [selectedOrderNumber]="order?.order_number"></app-breadcrumb> -->
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-icon class="loading-icon">schedule</mat-icon>
+    <p>Loading order details...</p>
+  </div>
+
+  <!-- Order Detail Content -->
+  <div *ngIf="!isLoading && order" class="order-detail-content">
+    <!-- Header Section -->
+    <div class="detail-header">
+      <div class="header-left">
+        <h1>Order #{{ order.order_number }}</h1>
+        <p class="order-date">{{ formatDate(order.created_at) }}</p>
+      </div>
+      <div class="header-right">
+        <div class="header-badges">
+          <span [class]="'badge badge-' + getStatusInfo(order.status).color">
+            {{ getStatusInfo(order.status).label }}
+          </span>
+          <span
+            *ngIf="order.payment_status"
+            [class]="'badge badge-payment-' + getPaymentStatusInfo(order.payment_status).color"
+          >
+            {{ getPaymentStatusInfo(order.payment_status).label }}
+          </span>
+        </div>
+        <p class="order-message">{{ getOrderMessage(order) }}</p>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="detail-grid">
+      <!-- Left Column: Order Items -->
+      <div class="detail-section">
+        <h3 class="section-title">Order Items</h3>
+        <div class="items-container">
+          <div *ngFor="let item of order.items" class="item-card">
+            <div class="item-content">
+              <!-- Product Image -->
+              <div class="item-image" *ngIf="item.product_image">
+                <a *ngIf="item.product_url" [routerLink]="item.product_url" class="image-link">
+                  <img [src]="item.product_image" [alt]="item.product_name" />
+                </a>
+                <img
+                  *ngIf="!item.product_url"
+                  [src]="item.product_image"
+                  [alt]="item.product_name"
+                />
+              </div>
+
+              <!-- Item Details -->
+              <div class="item-details">
+                <div class="item-header">
+                  <h4 class="item-name">
+                    <a
+                      *ngIf="item.product_url"
+                      [routerLink]="item.product_url"
+                      class="product-link"
+                    >
+                      {{ item.product_name }}
+                    </a>
+                    <span *ngIf="!item.product_url">{{ item.product_name }}</span>
+                  </h4>
+                  <span class="item-quantity">Qty: {{ item.quantity }}</span>
+                </div>
+                <div class="item-pricing">
+                  <p class="item-price">
+                    ₹{{ formatCurrency(item.product_price) }} × {{ item.quantity }}
+                  </p>
+                  <p class="item-total">₹{{ formatCurrency(item.line_total) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Order Summary & Shipping -->
+      <div class="detail-sidebar">
+        <!-- Order Summary -->
+        <div class="detail-section">
+          <h3 class="section-title">Order Summary</h3>
+          <div class="summary-rows">
+            <div class="summary-row">
+              <span class="label">Subtotal</span>
+              <span class="value">₹{{ formatCurrency(order.subtotal) }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="label">Shipping</span>
+              <span class="value">₹{{ formatCurrency(order.shipping) }}</span>
+            </div>
+            <div class="summary-row">
+              <span class="label">Tax</span>
+              <span class="value">₹{{ formatCurrency(order.tax) }}</span>
+            </div>
+            <div class="summary-row total">
+              <span class="label">Total</span>
+              <span class="value">₹{{ formatCurrency(order.total) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="detail-section">
+          <h3 class="section-title">Shipping Address</h3>
+          <div class="address-box">
+            <p class="address-name">{{ order.first_name }} {{ order.last_name }}</p>
+            <p class="address-street">{{ order.address }}</p>
+            <p class="address-apt" *ngIf="order.apartment">{{ order.apartment }}</p>
+            <p class="address-city">
+              {{ order.city }}<span *ngIf="order.state">, {{ order.state }}</span>
+              {{ order.zip_code }}
+            </p>
+            <p class="address-country" *ngIf="order.country">{{ order.country }}</p>
+            <p class="address-phone" *ngIf="order.phone">{{ order.phone }}</p>
+          </div>
+        </div>
+
+        <!-- Payment Info -->
+        <!-- <div class="detail-section" *ngIf="order.razorpay_order_id">
+          <h3 class="section-title">Payment Info</h3>
+          <div class="payment-info">
+            <p class="label">Order ID:</p>
+            <p class="value payment-id">{{ order.razorpay_order_id }}</p>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>

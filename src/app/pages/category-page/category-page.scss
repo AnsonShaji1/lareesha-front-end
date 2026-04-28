@@ -1,0 +1,40 @@
+.category-page {
+  padding-top: 0;
+  min-height: 100vh;
+  background: var(--ll-surface);
+}
+
+.category-header {
+  background: var(--ll-banner);
+  border-bottom: 1px solid #ece7e2;
+  text-align: center;
+  padding: 42px 24px 38px;
+
+  h1 {
+    font-size: 44px;
+    margin: 0 0 8px 0;
+    color: var(--ll-gold);
+    text-transform: none;
+  }
+
+  .category-description {
+    font-size: 16px;
+    color: #282828;
+    margin: 0;
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 768px) {
+  .category-header {
+    padding: 28px 16px 26px;
+
+    h1 {
+      font-size: 30px;
+    }
+
+    .category-description {
+      font-size: 13px;
+    }
+  }
+}

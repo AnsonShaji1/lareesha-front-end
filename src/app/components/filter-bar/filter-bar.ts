@@ -1,0 +1,232 @@
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  Input,
+  HostListener,
+  PLATFORM_ID,
+  Inject,
+} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+export interface FilterOptions {
+  categories?: string[];
+  priceSort?: 'low-to-high' | 'high-to-low';
+  priceRange?: { min?: number; max?: number };
+}
+
+export interface CategoryOption {
+  name: string;
+  slug: string;
+}
+
+@Component({
+  selector: 'app-filter-bar',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    FormsModule,
+    MatSliderModule,
+    MatFormFieldModule,
+    MatSelectModule,
+  ],
+  templateUrl: './filter-bar.html',
+  styleUrl: './filter-bar.scss',
+})
+export class FilterBarComponent implements OnInit {
+  @Input() hideCategory = false;
+  @Input() categories: CategoryOption[] = [];
+  @Output() filterChange = new EventEmitter<FilterOptions>();
+  @Output() resetFilters = new EventEmitter<void>();
+  priceOptions: Array<{ label: string; value: 'low-to-high' | 'high-to-low' }> = [
+    { label: 'Price: Low to High', value: 'low-to-high' },
+    { label: 'Price: High to Low', value: 'high-to-low' },
+  ];
+
+  selectedCategories: string[] = []; // slugs
+  appliedCategories: string[] = []; // slugs
+  selectedPriceSort?: 'low-to-high' | 'high-to-low';
+  minPrice: number = 0;
+  maxPrice: number = 10000;
+
+  // Range slider properties
+  minPriceInput: number = 0;
+  maxPriceInput: number = 10000;
+  readonly MIN_PRICE = 0;
+  readonly MAX_PRICE = 10000;
+
+  showFilterDrawer = false;
+  isMobile = false;
+  isCategoryExpanded = true;
+  isPriceExpanded = true;
+
+  private isBrowser: boolean;
+
+  constructor(@Inject(PLATFORM_ID) platformId: object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkIfMobile();
+  }
+
+  ngOnInit() {
+    this.checkIfMobile();
+  }
+
+  checkIfMobile() {
+    if (this.isBrowser) {
+      this.isMobile = window.innerWidth <= 1024;
+    }
+  }
+
+  openFilterDrawer() {
+    this.selectedCategories = [...this.appliedCategories];
+    this.showFilterDrawer = true;
+    if (this.isBrowser) {
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  closeFilterDrawer() {
+    this.showFilterDrawer = false;
+    if (this.isBrowser) {
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  toggleCategorySection() {
+    this.isCategoryExpanded = !this.isCategoryExpanded;
+  }
+
+  togglePriceSection() {
+    this.isPriceExpanded = !this.isPriceExpanded;
+  }
+
+  onCategorySelect(categorySlug: string) {
+    const index = this.selectedCategories.indexOf(categorySlug);
+    if (index > -1) {
+      this.selectedCategories.splice(index, 1);
+    } else {
+      this.selectedCategories.push(categorySlug);
+    }
+  }
+
+  isCategorySelected(categorySlug: string): boolean {
+    return this.selectedCategories.includes(categorySlug);
+  }
+
+  onPriceSelect(priceSort: 'low-to-high' | 'high-to-low' | null) {
+    this.selectedPriceSort = priceSort ?? undefined;
+    this.emitFilter();
+  }
+
+  onMinSliderChange(value: number) {
+    this.minPriceInput = value;
+    if (this.minPriceInput > this.maxPriceInput) {
+      this.maxPriceInput = this.minPriceInput;
+    }
+  }
+
+  onMaxSliderChange(value: number) {
+    this.maxPriceInput = value;
+    if (this.maxPriceInput < this.minPriceInput) {
+      this.minPriceInput = this.maxPriceInput;
+    }
+  }
+
+  applyFilters() {
+    this.appliedCategories = [...this.selectedCategories];
+    this.minPrice = this.minPriceInput;
+    this.maxPrice = this.maxPriceInput;
+    this.emitFilter();
+    this.closeFilterDrawer();
+  }
+
+  onReset() {
+    this.selectedCategories = [];
+    this.appliedCategories = [];
+    this.selectedPriceSort = undefined;
+    this.minPrice = this.MIN_PRICE;
+    this.maxPrice = this.MAX_PRICE;
+    this.minPriceInput = this.MIN_PRICE;
+    this.maxPriceInput = this.MAX_PRICE;
+    this.resetFilters.emit();
+  }
+
+  removeCategory(category: string) {
+    this.appliedCategories = this.appliedCategories.filter((c) => c !== category);
+    this.selectedCategories = [...this.appliedCategories];
+    this.emitFilter();
+  }
+
+  getCategoryLabel(categorySlug: string): string {
+    return this.categories.find((c) => c.slug === categorySlug)?.name ?? categorySlug;
+  }
+
+  removePriceFilter() {
+    this.minPrice = this.MIN_PRICE;
+    this.maxPrice = this.MAX_PRICE;
+    this.minPriceInput = this.MIN_PRICE;
+    this.maxPriceInput = this.MAX_PRICE;
+    this.emitFilter();
+  }
+
+  removeSortFilter() {
+    this.selectedPriceSort = undefined;
+    this.emitFilter();
+  }
+
+  clearAllFilters() {
+    this.onReset();
+  }
+
+  hasActiveFilters(): boolean {
+    return (
+      (!this.hideCategory && this.appliedCategories.length > 0) ||
+      !!this.selectedPriceSort ||
+      this.minPrice > this.MIN_PRICE ||
+      this.maxPrice < this.MAX_PRICE
+    );
+  }
+
+  getActiveFilterCount(): number {
+    let count = 0;
+    if (!this.hideCategory && this.appliedCategories.length > 0) {
+      count += this.appliedCategories.length;
+    }
+    if (!!this.selectedPriceSort) {
+      count += 1;
+    }
+    if (this.minPrice > this.MIN_PRICE || this.maxPrice < this.MAX_PRICE) {
+      count += 1;
+    }
+    return count;
+  }
+
+  getPriceRangeLabel(): string {
+    return `₹${this.minPrice} – ₹${this.maxPrice}`;
+  }
+
+  private emitFilter() {
+    const filterOptions: FilterOptions = {
+      categories: this.appliedCategories.length > 0 ? this.appliedCategories : undefined,
+      priceSort: this.selectedPriceSort,
+      priceRange:
+        this.minPrice > this.MIN_PRICE || this.maxPrice < this.MAX_PRICE
+          ? { min: this.minPrice, max: this.maxPrice }
+          : undefined,
+    };
+    this.filterChange.emit(filterOptions);
+  }
+}

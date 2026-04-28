@@ -1,0 +1,62 @@
+<div class="my-account-container">
+  <div class="my-account-page">
+    <!-- Sidebar Navigation (hidden on orders page) -->
+    <aside class="account-sidebar" *ngIf="!isOrdersPage">
+      <mat-card class="account-shell-card">
+        <!-- User Info Section -->
+        <div class="user-info" *ngIf="user">
+          <div class="user-avatar">
+            {{ user.first_name.charAt(0).toUpperCase() }}{{ user.last_name.charAt(0).toUpperCase() }}
+          </div>
+          <div class="user-details">
+            <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+            <p>{{ user.email }}</p>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="account-nav">
+          <!-- My Orders Section -->
+          <div class="nav-section">
+            <mat-nav-list class="nav-list">
+              <a
+                mat-list-item
+                (click)="navigate('orders')"
+                [class.active]="isActive('orders')"
+                class="nav-link"
+              >
+                <mat-icon matListItemIcon>shopping_bag</mat-icon>
+                <span matListItemTitle>My Orders</span>
+              </a>
+            </mat-nav-list>
+          </div>
+
+          <!-- Account Settings Section -->
+          <div class="nav-section">
+            <h4 class="section-title">Account Settings</h4>
+            <mat-nav-list class="nav-list">
+              <a mat-list-item (click)="navigate('')" [class.active]="isActive('')" class="nav-link">
+                <mat-icon matListItemIcon>person</mat-icon>
+                <span matListItemTitle>Profile Information</span>
+              </a>
+              <a
+                mat-list-item
+                (click)="navigate('address')"
+                [class.active]="isActive('address')"
+                class="nav-link"
+              >
+                <mat-icon matListItemIcon>home</mat-icon>
+                <span matListItemTitle>Manage Addresses</span>
+              </a>
+            </mat-nav-list>
+          </div>
+        </nav>
+      </mat-card>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="account-content" [class.full-width]="isOrdersPage">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

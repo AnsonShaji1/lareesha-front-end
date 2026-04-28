@@ -1,0 +1,118 @@
+<div class="account-orders-container">
+  <!-- Left Column: Breadcrumb & Filters -->
+  <aside class="orders-filters-column">
+    <!-- Breadcrumb Navigation -->
+    <app-breadcrumb></app-breadcrumb>
+
+    <!-- Filters Section -->
+    <app-order-filters (filterChange)="onFilterChange($event)"></app-order-filters>
+  </aside>
+
+  <!-- Right Column: Orders Content -->
+  <main class="orders-content-column">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>My Orders</h1>
+      <p class="subtitle">Manage and track your orders in one place</p>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+      <mat-form-field appearance="outline" class="search-box">
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          type="text"
+          placeholder="Search by order number or product name..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()"
+          class="search-input"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <mat-icon class="loading-icon">schedule</mat-icon>
+      <p>Loading your orders...</p>
+    </div>
+
+    <!-- Empty State -->
+    <mat-card *ngIf="!isLoading && filteredOrders.length === 0" class="empty-state">
+      <mat-icon>shopping_bag</mat-icon>
+      <h3>No orders found</h3>
+      <p *ngIf="searchQuery">Try adjusting your search criteria</p>
+      <p
+        *ngIf="
+          !searchQuery &&
+          activeFilters.orderStatuses.length === 0 &&
+          activeFilters.orderPeriods.length === 0
+        "
+      >
+        You haven't placed any orders yet
+      </p>
+      <p
+        *ngIf="
+          !searchQuery &&
+          (activeFilters.orderStatuses.length > 0 || activeFilters.orderPeriods.length > 0)
+        "
+      >
+        No orders match your selected filters
+      </p>
+    </mat-card>
+
+    <!-- Orders List -->
+    <div *ngIf="!isLoading && filteredOrders.length > 0" class="orders-list">
+      <mat-card *ngFor="let order of filteredOrders" class="order-card">
+        <!-- Row 1: Order ID, Date, Total, Status, Message, and View Button -->
+        <div class="order-card-row-1">
+          <div class="order-info">
+            <h3 class="order-number">Order #{{ order.order_number }}</h3>
+            <p class="order-date">{{ formatDate(order.created_at) }}</p>
+          </div>
+
+          <div class="order-center">
+            <div class="order-total">
+              <p class="total-label">Total</p>
+              <p class="total-amount">₹{{ formatCurrency(order.total) }}</p>
+            </div>
+            <div class="order-status">
+              <span [class]="'badge badge-' + getStatusInfo(order.status).color">
+                {{ getStatusInfo(order.status).label }}
+              </span>
+              <span
+                *ngIf="order.payment_status"
+                [class]="'badge badge-payment-' + getPaymentStatusInfo(order.payment_status).color"
+              >
+                {{ getPaymentStatusInfo(order.payment_status).label }}
+              </span>
+            </div>
+            <p class="order-message">{{ getOrderMessage(order) }}</p>
+          </div>
+
+          <button
+            mat-flat-button
+            class="btn-view-details"
+            type="button"
+            [routerLink]="['/order', order.id]"
+          >
+            <span>View Details</span>
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+
+        <!-- Row 2: Items -->
+        <div class="order-card-row-2">
+          <div class="items-list">
+            <div *ngFor="let item of order.items" class="item-row">
+              <p class="item-name">{{ item.product_name }}</p>
+              <p class="item-price">
+                ₹{{ formatCurrency(item.product_price) }} × {{ item.quantity }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </main>
+</div>

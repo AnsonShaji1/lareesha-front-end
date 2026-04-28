@@ -1,0 +1,33 @@
+<div class="product-card">
+  <div class="product-image-container">
+    <img [src]="product.images[0]" [alt]="product.name" class="product-image" />
+
+    @if (product.availableStock === 0) {
+      <div class="out-of-stock-badge">OUT OF STOCK</div>
+    } @else {
+      <button class="add-button" (click)="addToCart()" aria-label="Add to cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </button>
+    }
+  </div>
+
+  <div class="product-info">
+    <h3 class="product-name">{{ product.name }}</h3>
+
+    <div class="product-price">
+      @if (product.salePrice && +product.salePrice < +product.originalPrice) {
+        <!-- <span class="price-label">ORIGINAL PRICE</span> -->
+
+        <span class="original-price">{{ product.originalPrice }}</span>
+
+        <!-- <span class="price-label">SALE PRICE</span> -->
+
+        <span class="sale-price">*{{ product.salePrice }}</span>
+      } @else {
+        <!-- <span class="price-label">SALE PRICE</span> -->
+
+        <span class="price">{{ product.salePrice }}</span>
+      }
+    </div>
+  </div>
+</div>
