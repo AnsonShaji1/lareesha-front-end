@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --configuration production",
     "start:dev": "ng serve --configuration development",
     "start:prod": "ng serve --configuration production",
     "build": "ng build --configuration production",
     "build:dev": "ng build --configuration development",
-    "watch": "ng build --watch --configuration development",
+    "watch": "ng build --watch --configuration production",
     "test": "ng test"
   },
   "prettier": {
