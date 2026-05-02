@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
@@ -23,7 +24,7 @@ export interface Address {
   providedIn: 'root',
 })
 export class AddressService {
-  private baseUrl = 'http://localhost:8000/api/addresses';
+  private baseUrl = `${environment.apiBaseUrl}/api/addresses`;
   private addressesSubject = new BehaviorSubject<Address[]>([]);
   public addresses$ = this.addressesSubject.asObservable();
 

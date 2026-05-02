@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, finalize } from 'rxjs';
 import { of } from 'rxjs';
@@ -41,7 +42,7 @@ export interface TokenResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8000/api/auth';
+  private baseUrl = `${environment.apiBaseUrl}/api/auth`;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
