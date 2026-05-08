@@ -12,6 +12,8 @@ export interface User {
   date_joined: string;
   pk?: number;
   username?: string;
+  gender?: string;
+  phone?: string;
 }
 
 export interface LoginCredentials {

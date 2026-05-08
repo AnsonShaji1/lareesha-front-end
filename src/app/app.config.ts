@@ -3,6 +3,7 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
   APP_INITIALIZER,
+  importProvidersFrom,
 } from '@angular/core';
 
 import { provideRouter } from '@angular/router';
@@ -21,6 +22,8 @@ import { authInterceptor } from './services/auth.interceptor';
 
 import { AuthService } from './services/auth.service';
 
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+
 export function initializeAuth(authService: AuthService) {
   return () => authService.initializeAuth();
 }
@@ -34,6 +37,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
 
     provideAnimations(),
+
+    importProvidersFrom(MatBottomSheetModule),
 
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
 

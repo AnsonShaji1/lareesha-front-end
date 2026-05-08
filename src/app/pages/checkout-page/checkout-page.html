@@ -39,7 +39,12 @@
 
           <!-- Saved Addresses -->
           <div class="saved-addresses" *ngIf="savedAddresses.length > 0">
-            <mat-radio-group class="address-list" [(ngModel)]="selectedAddressId" name="savedAddress">
+            <mat-radio-group
+              class="address-list"
+              [(ngModel)]="selectedAddressId"
+              name="savedAddress"
+              (change)="onShippingAddressChange($event)"
+            >
               <div
                 class="address-card"
                 *ngFor="let address of savedAddresses"
@@ -100,8 +105,12 @@
           </div>
         </section>
 
-        <button mat-flat-button type="submit" class="btn-place-order" [disabled]="isProcessing">
-          {{ isProcessing ? 'PROCESSING...' : 'PLACE ORDER' }}
+        <button
+          type="submit"
+          class="ll-cta ll-cta--primary btn-place-order btn-place-order--desktop"
+          [disabled]="isProcessing"
+        >
+          {{ isProcessing ? 'PROCESSING…' : 'PLACE ORDER' }}
         </button>
       </form>
     </div>
@@ -129,17 +138,37 @@
         </div>
         <div class="total-row">
           <span>Shipping:</span>
-          <span>{{ shipping === 0 ? 'FREE' : '₹' + shipping.toFixed(2) }}</span>
+          <span *ngIf="shippingPendingAddress">—</span>
+          <span *ngIf="!shippingPendingAddress">{{ shipping === 0 ? 'FREE' : '₹' + shipping.toFixed(2) }}</span>
         </div>
+        <div class="total-row total-row-note" *ngIf="shippingPendingAddress">
+          <span class="note">
+            Select a delivery address to calculate shipping from your pincode. The total below does not include shipping
+            until then.
+          </span>
+        </div>
+        <!-- <div class="total-row total-row-note" *ngIf="shippingZone && !shippingPendingAddress">
+          <span class="note">Zone: {{ shippingZone }}</span>
+        </div> -->
         <div class="total-row">
           <span>Tax:</span>
           <span>₹{{ tax.toFixed(2) }}</span>
         </div>
         <div class="total-row grand-total">
-          <span>Total:</span>
+          <span>{{ shippingPendingAddress ? 'Total (excl. shipping)' : 'Total' }}:</span>
           <span>₹{{ total.toFixed(2) }}</span>
         </div>
       </div>
     </div>
+
+    <!-- Mobile-only Place Order button (kept last in the page flow) -->
+    <button
+      type="button"
+      class="ll-cta ll-cta--primary btn-place-order btn-place-order--mobile"
+      [disabled]="isProcessing"
+      (click)="placeOrder()"
+    >
+      {{ isProcessing ? 'PROCESSING…' : 'PLACE ORDER' }}
+    </button>
   </div>
 </div>

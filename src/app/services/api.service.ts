@@ -110,6 +110,8 @@ export interface CalculateTotalsResponse {
   shipping: number;
   tax: number;
   total: number;
+  shipping_pending_address?: boolean;
+  shipping_zone?: string | null;
 }
 
 @Injectable({
@@ -343,10 +345,11 @@ export class ApiService {
     });
   }
 
-  calculateTotals(): Observable<CalculateTotalsResponse> {
+  calculateTotals(shippingAddressId?: number): Observable<CalculateTotalsResponse> {
+    const payload = shippingAddressId ? { shipping_address_id: shippingAddressId } : {};
     return this.http.post<CalculateTotalsResponse>(
       `${this.baseUrl}/orders/calculate_checkout_totals/`,
-      {},
+      payload,
       { withCredentials: true },
     );
   }

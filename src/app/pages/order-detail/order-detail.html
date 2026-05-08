@@ -10,27 +10,51 @@
 
   <!-- Order Detail Content -->
   <div *ngIf="!isLoading && order" class="order-detail-content">
-    <!-- Header Section -->
-    <div class="detail-header">
-      <div class="header-left">
-        <h1>Order #{{ order.order_number }}</h1>
-        <p class="order-date">{{ formatDate(order.created_at) }}</p>
-      </div>
-      <div class="header-right">
-        <div class="header-badges">
-          <span [class]="'badge badge-' + getStatusInfo(order.status).color">
+    <!-- Header + status (same pattern as account orders list) -->
+    <header class="detail-header">
+      <h1>Order #{{ order.order_number }}</h1>
+      <p class="order-date">{{ formatDate(order.created_at) }}</p>
+    </header>
+
+    <div
+      class="order-status-tiles"
+      role="group"
+      [attr.aria-label]="'Shipment and payment for order ' + order.order_number"
+    >
+      <article class="status-tile">
+        <div class="status-tile-head">
+          <mat-icon class="status-tile-icon" aria-hidden="true">inventory_2</mat-icon>
+          <div class="status-tile-text">
+            <span class="status-tile-title">Your package</span>
+            <span class="status-tile-caption">Packing, shipping &amp; delivery updates.</span>
+          </div>
+        </div>
+        <div class="status-tile-result">
+          <span [class]="'status-pill badge badge-' + getStatusInfo(order.status).color">
             {{ getStatusInfo(order.status).label }}
           </span>
+        </div>
+      </article>
+      <article class="status-tile" *ngIf="order.payment_status">
+        <div class="status-tile-head">
+          <mat-icon class="status-tile-icon" aria-hidden="true">payments</mat-icon>
+          <div class="status-tile-text">
+            <span class="status-tile-title">Your payment</span>
+            <span class="status-tile-caption">Card or bank payment confirmation.</span>
+          </div>
+        </div>
+        <div class="status-tile-result">
           <span
-            *ngIf="order.payment_status"
-            [class]="'badge badge-payment-' + getPaymentStatusInfo(order.payment_status).color"
+            [class]="
+              'status-pill badge badge-payment-' + getPaymentStatusInfo(order.payment_status).color
+            "
           >
             {{ getPaymentStatusInfo(order.payment_status).label }}
           </span>
         </div>
-        <p class="order-message">{{ getOrderMessage(order) }}</p>
-      </div>
+      </article>
     </div>
+    <p class="order-message">{{ getOrderMessage(order) }}</p>
 
     <!-- Main Content Grid -->
     <div class="detail-grid">

@@ -4,12 +4,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatRadioModule, MatRadioChange } from '@angular/material/radio';
 import { CartService, CartItem } from '../../services/cart';
 import { NotificationService } from '../../services/notification.service';
 import { AddressService, Address } from '../../services/address.service';
-import { AddressDialogComponent } from '../../components/address-dialog/address-dialog';
+import { AddressEditorOpenerService } from '../../services/address-editor-opener.service';
 import { ApiService, CreateOrderResponse } from '../../services/api.service';
 import { RazorpayService, RazorpayResponse } from '../../services/razorpay.service';
 import { Subscription, finalize } from 'rxjs';
@@ -17,7 +16,7 @@ import { Subscription, finalize } from 'rxjs';
 @Component({
   selector: 'app-checkout-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule, MatDialogModule, MatRadioModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule, MatRadioModule],
   templateUrl: './checkout-page.html',
   styleUrl: './checkout-page.scss',
 })
@@ -27,6 +26,9 @@ export class CheckoutPage implements OnInit, OnDestroy {
   shipping = 0;
   tax = 0;
   total = 0;
+  /** True when backend has no address yet (shipping shown as 0 until user picks one). */
+  shippingPendingAddress = false;
+  shippingZone: string | null = null;
   orderPlaced = false;
   orderNumber = '';
   orderId: number | null = null; // Store order ID for post-payment navigation
@@ -35,42 +37,35 @@ export class CheckoutPage implements OnInit, OnDestroy {
   private timerInterval: any;
 
   indianStates = [
-    'Andhra Pradesh',
-    'Arunachal Pradesh',
-    'Assam',
-    'Bihar',
-    'Chhattisgarh',
-    'Goa',
-    'Gujarat',
-    'Haryana',
-    'Himachal Pradesh',
-    'Jharkhand',
-    'Karnataka',
-    'Kerala',
-    'Madhya Pradesh',
-    'Maharashtra',
-    'Manipur',
-    'Meghalaya',
-    'Mizoram',
-    'Nagaland',
-    'Odisha',
-    'Punjab',
-    'Rajasthan',
-    'Sikkim',
-    'Tamil Nadu',
-    'Telangana',
-    'Tripura',
-    'Uttar Pradesh',
-    'Uttarakhand',
-    'West Bengal',
-    'Andaman and Nicobar Islands',
-    'Chandigarh',
-    'Dadra and Nagar Haveli and Daman and Diu',
-    'Delhi',
-    'Jammu and Kashmir',
-    'Ladakh',
-    'Lakshadweep',
-    'Puducherry',
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Delhi",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal"
   ];
 
   checkoutForm = {
@@ -98,7 +93,7 @@ export class CheckoutPage implements OnInit, OnDestroy {
     private addressService: AddressService,
     private apiService: ApiService,
     private razorpayService: RazorpayService,
-    private dialog: MatDialog,
+    private addressEditorOpener: AddressEditorOpenerService,
   ) {}
 
   ngOnInit() {
@@ -120,37 +115,34 @@ export class CheckoutPage implements OnInit, OnDestroy {
         this.savedAddresses = addresses;
         // Auto-select default address if available
         const defaultAddress = addresses.find((a) => a.is_default);
-        if (defaultAddress) {
-          this.selectedAddressId = defaultAddress.id;
+        const first = addresses[0];
+        const toSelect = defaultAddress ?? first ?? null;
+        if (toSelect) {
+          this.selectedAddressId = toSelect.id;
+          this.calculateTotals(toSelect.id);
+        } else {
+          this.calculateTotals();
         }
       },
       error: (error) => {
         console.error('Error loading addresses:', error);
-        // Continue with address selection
+        this.calculateTotals();
       },
     });
   }
 
   openAddressDialog() {
-    const dialogRef = this.dialog.open(AddressDialogComponent, {
-      width: '600px',
-      data: { isNew: true, isFirstAddress: this.savedAddresses.length === 0 },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.loadSavedAddresses();
-      }
-    });
+    this.addressEditorOpener
+      .open({ isNew: true, isFirstAddress: this.savedAddresses.length === 0 })
+      .subscribe((result) => {
+        if (result) {
+          this.loadSavedAddresses();
+        }
+      });
   }
 
   editAddress(address: Address) {
-    const dialogRef = this.dialog.open(AddressDialogComponent, {
-      width: '600px',
-      data: { ...address, isNew: false },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
+    this.addressEditorOpener.open({ ...address, isNew: false }).subscribe((result) => {
       if (result) {
         this.loadSavedAddresses();
       }
@@ -197,6 +189,21 @@ export class CheckoutPage implements OnInit, OnDestroy {
 
   selectAddress(addressId: number) {
     this.selectedAddressId = addressId;
+    this.calculateTotals(addressId);
+  }
+
+  /**
+   * Fires when the user picks an address via the radio control (card click uses selectAddress).
+   * Without this, shipping never recalculates when only the radio is used.
+   */
+  onShippingAddressChange(event: MatRadioChange) {
+    const id = event.value as number | null;
+    if (id == null) {
+      this.calculateTotals();
+      return;
+    }
+    this.selectedAddressId = id;
+    this.calculateTotals(id);
   }
 
   formatPhoneNumber(event: any) {
@@ -230,14 +237,17 @@ export class CheckoutPage implements OnInit, OnDestroy {
     }
   }
 
-  calculateTotals() {
-    // Call backend API to calculate totals based on product-specific tax and shipping
-    this.apiService.calculateTotals().subscribe({
+  calculateTotals(addressId?: number) {
+    // Calculate totals using destination-aware shipping from backend rules
+    const shippingAddressId = addressId ?? this.selectedAddressId ?? undefined;
+    this.apiService.calculateTotals(shippingAddressId).subscribe({
       next: (response) => {
-        this.subtotal = response.subtotal;
-        this.shipping = response.shipping;
-        this.tax = response.tax;
-        this.total = response.total;
+        this.subtotal = Number(response.subtotal);
+        this.shipping = Number(response.shipping);
+        this.tax = Number(response.tax);
+        this.total = Number(response.total);
+        this.shippingPendingAddress = response.shipping_pending_address === true;
+        this.shippingZone = response.shipping_zone ?? null;
       },
       error: (error: any) => {
         console.error('Error calculating totals:', error);

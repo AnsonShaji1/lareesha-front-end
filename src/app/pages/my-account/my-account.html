@@ -1,7 +1,7 @@
 <div class="my-account-container">
   <div class="my-account-page">
     <!-- Sidebar Navigation (hidden on orders page) -->
-    <aside class="account-sidebar" *ngIf="!isOrdersPage">
+    <aside class="account-sidebar account-sidebar--desktop" *ngIf="!isOrdersPage">
       <mat-card class="account-shell-card">
         <!-- User Info Section -->
         <div class="user-info" *ngIf="user">
@@ -56,6 +56,39 @@
 
     <!-- Main Content Area -->
     <main class="account-content" [class.full-width]="isOrdersPage">
+      <!-- Mobile-only account header + navigation (replaces sidebar) -->
+      <section class="account-mobile-shell" *ngIf="!isOrdersPage">
+        <div class="account-mobile-header">
+          <div class="account-mobile-title">
+            <span class="eyebrow">Account</span>
+            <h1>My account</h1>
+          </div>
+
+          <div class="account-mobile-user" *ngIf="user">
+            <div class="avatar">
+              {{ user.first_name.charAt(0).toUpperCase() }}{{ user.last_name.charAt(0).toUpperCase() }}
+            </div>
+            <div class="meta">
+              <div class="name">{{ user.first_name }} {{ user.last_name }}</div>
+              <div class="email">{{ user.email }}</div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="account-mobile-nav" aria-label="Account sections">
+          <a
+            class="nav-tab"
+            [routerLink]="['./']"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Profile
+          </a>
+          <a class="nav-tab" [routerLink]="['./orders']" routerLinkActive="active">Orders</a>
+          <a class="nav-tab" [routerLink]="['./address']" routerLinkActive="active">Addresses</a>
+        </nav>
+      </section>
+
       <router-outlet></router-outlet>
     </main>
   </div>

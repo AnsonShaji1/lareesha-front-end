@@ -3,14 +3,13 @@ import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header';
 import { SearchModalComponent } from './components/search-modal/search-modal';
-import { AuthModalComponent } from './components/auth-modal/auth-modal';
-import { ForgotPasswordModalComponent } from './components/forgot-password-modal/forgot-password-modal';
 import { CartDrawerComponent } from './components/cart-drawer/cart-drawer';
 import { SiteFooterComponent } from './components/site-footer/site-footer';
 import { ProductService } from './services/product';
 import { CartDrawerService } from './services/cart-drawer.service';
 import { CartService } from './services/cart';
 import { Wishlist } from './services/wishlist';
+import { AuthFlowService } from './services/auth-flow.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -20,8 +19,6 @@ import { Subscription } from 'rxjs';
     RouterOutlet,
     HeaderComponent,
     SearchModalComponent,
-    AuthModalComponent,
-    ForgotPasswordModalComponent,
     CartDrawerComponent,
     SiteFooterComponent,
   ],
@@ -31,11 +28,7 @@ import { Subscription } from 'rxjs';
 export class App implements OnInit, OnDestroy {
   title = 'Lareesha Luxe';
   isSearchOpen = false;
-  isAuthModalOpen = false;
-  isForgotPasswordOpen = false;
   isCartOpen = false;
-  authMode: 'signin' | 'signup' = 'signin';
-  private pendingCheckout = false;
   private cartDrawerSubscription?: Subscription;
   private itemAddedSubscription?: Subscription;
   private cartAuthRequiredSubscription?: Subscription;
@@ -47,6 +40,7 @@ export class App implements OnInit, OnDestroy {
     private cartService: CartService,
     private wishlistService: Wishlist,
     private router: Router,
+    private authFlow: AuthFlowService,
   ) {
     console.log('App constructor wishlistService:', this.wishlistService);
   }
@@ -65,17 +59,16 @@ export class App implements OnInit, OnDestroy {
       this.isCartOpen = true;
     });
 
-    // Listen for auth required events from cart
     this.cartAuthRequiredSubscription = this.cartService.authRequired$.subscribe(() => {
       console.log('Cart: Auth required');
       this.openSignIn();
     });
 
-    // Listen for auth required events from wishlist
     this.wishlistAuthRequiredSubscription = this.wishlistService.authRequired$.subscribe(() => {
       console.log('Wishlist: Auth required');
       this.openSignIn();
     });
+
   }
 
   ngOnDestroy() {
@@ -94,42 +87,7 @@ export class App implements OnInit, OnDestroy {
   }
 
   openSignIn() {
-    this.authMode = 'signin';
-    this.isAuthModalOpen = true;
-  }
-
-  openSignUp() {
-    this.authMode = 'signup';
-    this.isAuthModalOpen = true;
-  }
-
-  closeAuthModal() {
-    this.isAuthModalOpen = false;
-  }
-
-  openForgotPassword() {
-    this.isAuthModalOpen = false;
-    this.isForgotPasswordOpen = true;
-  }
-
-  closeForgotPassword() {
-    this.isForgotPasswordOpen = false;
-  }
-
-  backToSignIn() {
-    this.isForgotPasswordOpen = false;
-    this.openSignIn();
-  }
-
-  onAuthenticated(userData: any) {
-    console.log('User authenticated:', userData);
-    this.closeAuthModal();
-    if (this.pendingCheckout) {
-      this.pendingCheckout = false;
-      setTimeout(() => {
-        this.goToCheckout();
-      }, 500);
-    }
+    void this.router.navigate(['/sign-in']);
   }
 
   openCart() {
@@ -155,7 +113,7 @@ export class App implements OnInit, OnDestroy {
   handleAuthRequired() {
     console.log('=== Authentication required for checkout ===');
     this.isCartOpen = false;
-    this.pendingCheckout = true;
-    this.openSignIn();
+    this.authFlow.markCheckoutPending();
+    void this.router.navigate(['/sign-in']);
   }
 }

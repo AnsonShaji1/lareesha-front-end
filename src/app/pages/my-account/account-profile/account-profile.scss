@@ -38,6 +38,7 @@
     box-shadow: none;
     border: 1px solid var(--ll-border);
     max-width: 680px;
+    width: 100%;
 
     .form-group {
       margin-bottom: 12px;
@@ -118,11 +119,19 @@
     --mdc-outlined-text-field-label-text-color: var(--ll-muted);
     --mdc-outlined-text-field-focus-label-text-color: var(--ll-gold);
     --mdc-outlined-text-field-input-text-color: var(--ll-text);
+    /* Prevent dark state-layer fills on hover/focus */
+    --mdc-outlined-text-field-hover-state-layer-color: transparent;
+    --mdc-outlined-text-field-focus-state-layer-color: transparent;
     --mat-form-field-container-height: 44px;
     --mat-form-field-container-vertical-padding: 9px;
     --mdc-outlined-text-field-disabled-outline-color: var(--ll-border);
     --mdc-outlined-text-field-disabled-label-text-color: var(--ll-muted);
     --mdc-outlined-text-field-disabled-input-text-color: var(--ll-muted);
+  }
+
+  /* Force surface background (avoid “black” fill on click) */
+  .profile-form-card .mat-mdc-text-field-wrapper {
+    background: var(--ll-surface) !important;
   }
 
   .profile-form-card .mat-mdc-form-field .mdc-floating-label,
@@ -162,6 +171,24 @@
 
     .profile-form-card {
       padding: 20px;
+    }
+  }
+}
+
+/* Mobile account shell already shows the page title; reduce duplicate heading */
+@media (max-width: 768px) {
+  .profile-page {
+    .page-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0;
+      margin: 0 0 12px;
+
+      h1 {
+        display: none;
+      }
     }
   }
 }

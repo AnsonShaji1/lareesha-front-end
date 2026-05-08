@@ -1,42 +1,48 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-forgot-password-modal',
+  selector: 'app-forgot-password-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule],
-  templateUrl: './forgot-password-modal.html',
-  styleUrl: './forgot-password-modal.scss',
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
+  templateUrl: './forgot-password-page.html',
+  styleUrl: './forgot-password-page.scss',
 })
-export class ForgotPasswordModalComponent {
-  @Input() isOpen = false;
-  @Output() closeModal = new EventEmitter<void>();
-  @Output() backToSignIn = new EventEmitter<void>();
+export class ForgotPasswordPage {
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   email = '';
   emailSent = false;
   isLoading = false;
 
-  constructor(
-    private notificationService: NotificationService,
-    private authService: AuthService,
-  ) {}
-
-  onSubmit() {
+  onSubmit(): void {
     if (!this.email || !this.isValidEmail(this.email)) {
       this.notificationService.error('Please enter a valid email address');
       return;
     }
 
     this.isLoading = true;
-
     this.authService.forgotPassword(this.email).subscribe({
-      next: (response) => {
+      next: () => {
         this.isLoading = false;
         this.emailSent = true;
         this.notificationService.success('Reset link has been sent to your email!');
@@ -49,7 +55,7 @@ export class ForgotPasswordModalComponent {
     });
   }
 
-  resendEmail(event: Event) {
+  resendEmail(event: Event): void {
     event.preventDefault();
 
     if (!this.email) {
@@ -58,37 +64,22 @@ export class ForgotPasswordModalComponent {
     }
 
     this.isLoading = true;
-
     this.authService.forgotPassword(this.email).subscribe({
-      next: (response) => {
+      next: () => {
         this.isLoading = false;
         this.notificationService.success('Reset link has been resent!');
       },
       error: (error) => {
         this.isLoading = false;
-        const errorMessage =
-          error?.error?.error || 'Failed to resend reset link. Please try again.';
+        const errorMessage = error?.error?.error || 'Failed to resend reset link. Please try again.';
         this.notificationService.error(errorMessage);
       },
     });
   }
 
-  close() {
-    setTimeout(() => {
-      this.email = '';
-      this.emailSent = false;
-      this.isLoading = false;
-    }, 300);
-    this.closeModal.emit();
-  }
-
-  goBackToSignIn() {
-    setTimeout(() => {
-      this.email = '';
-      this.emailSent = false;
-      this.isLoading = false;
-    }, 300);
-    this.backToSignIn.emit();
+  backToSignIn(): void {
+    const qp = { ...this.route.snapshot.queryParams };
+    void this.router.navigate(['/sign-in'], { queryParams: qp });
   }
 
   private isValidEmail(email: string): boolean {
@@ -96,3 +87,4 @@ export class ForgotPasswordModalComponent {
     return emailRegex.test(email);
   }
 }
+

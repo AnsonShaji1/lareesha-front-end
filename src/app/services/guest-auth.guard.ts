@@ -4,20 +4,19 @@ import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { firstValueFrom } from 'rxjs';
 
-export const authGuard: CanActivateFn = async (_route, state) => {
+/** Redirect authenticated users away from sign-in / sign-up pages */
+export const guestAuthGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   try {
     const isAuthenticated = await firstValueFrom(authService.isAuthenticated$);
-
     if (isAuthenticated) {
-      return true;
+      await router.navigate(['/']);
+      return false;
     }
+    return true;
   } catch {
-    // Error getting auth status
+    return true;
   }
-
-  await router.navigate(['/sign-in'], { queryParams: { returnUrl: state.url } });
-  return false;
 };

@@ -1,10 +1,9 @@
 <div class="account-orders-container">
-  <!-- Left Column: Breadcrumb & Filters -->
-  <aside class="orders-filters-column">
-    <!-- Breadcrumb Navigation -->
-    <app-breadcrumb></app-breadcrumb>
+  <!-- Breadcrumb (always on top, incl. mobile) -->
+  <app-breadcrumb class="detail-breadcrumb"></app-breadcrumb>
 
-    <!-- Filters Section -->
+  <!-- Desktop-only Filters Column -->
+  <aside class="orders-filters-column orders-filters-column--desktop">
     <app-order-filters (filterChange)="onFilterChange($event)"></app-order-filters>
   </aside>
 
@@ -12,8 +11,22 @@
   <main class="orders-content-column">
     <!-- Page Header -->
     <div class="page-header">
-      <h1>My Orders</h1>
-      <p class="subtitle">Manage and track your orders in one place</p>
+      <div class="page-header-row">
+        <div class="page-header-text">
+          <h1>My Orders</h1>
+          <p class="subtitle">Manage and track your orders in one place</p>
+        </div>
+
+        <!-- Mobile-only Filters button -->
+        <button
+          type="button"
+          class="ll-cta ll-cta--outline-dark btn-filters"
+          (click)="openMobileFilters()"
+        >
+          <mat-icon aria-hidden="true">tune</mat-icon>
+          <span>Filters</span>
+        </button>
+      </div>
     </div>
 
     <!-- Search Section -->
@@ -76,16 +89,46 @@
               <p class="total-label">Total</p>
               <p class="total-amount">₹{{ formatCurrency(order.total) }}</p>
             </div>
-            <div class="order-status">
-              <span [class]="'badge badge-' + getStatusInfo(order.status).color">
-                {{ getStatusInfo(order.status).label }}
-              </span>
-              <span
-                *ngIf="order.payment_status"
-                [class]="'badge badge-payment-' + getPaymentStatusInfo(order.payment_status).color"
-              >
-                {{ getPaymentStatusInfo(order.payment_status).label }}
-              </span>
+            <div
+              class="order-status-tiles"
+              role="group"
+              [attr.aria-label]="
+                'Shipment and payment for order ' + order.order_number
+              "
+            >
+              <article class="status-tile">
+                <div class="status-tile-head">
+                  <mat-icon class="status-tile-icon" aria-hidden="true">inventory_2</mat-icon>
+                  <div class="status-tile-text">
+                    <span class="status-tile-title">Your package</span>
+                    <span class="status-tile-caption">Packing, shipping &amp; delivery updates.</span>
+                  </div>
+                </div>
+                <div class="status-tile-result">
+                  <span [class]="'status-pill badge badge-' + getStatusInfo(order.status).color">
+                    {{ getStatusInfo(order.status).label }}
+                  </span>
+                </div>
+              </article>
+              <article class="status-tile" *ngIf="order.payment_status">
+                <div class="status-tile-head">
+                  <mat-icon class="status-tile-icon" aria-hidden="true">payments</mat-icon>
+                  <div class="status-tile-text">
+                    <span class="status-tile-title">Your payment</span>
+                    <span class="status-tile-caption">Card or bank payment confirmation.</span>
+                  </div>
+                </div>
+                <div class="status-tile-result">
+                  <span
+                    [class]="
+                      'status-pill badge badge-payment-' +
+                      getPaymentStatusInfo(order.payment_status).color
+                    "
+                  >
+                    {{ getPaymentStatusInfo(order.payment_status).label }}
+                  </span>
+                </div>
+              </article>
             </div>
             <p class="order-message">{{ getOrderMessage(order) }}</p>
           </div>
@@ -115,4 +158,32 @@
       </mat-card>
     </div>
   </main>
+
+  <!-- Mobile filters drawer (bottom-sheet style).
+       Keep it mounted (no *ngIf) so selections persist between opens. -->
+  <div
+    class="filters-drawer-overlay"
+    [class.active]="isMobileFiltersOpen"
+    (click)="closeMobileFilters()"
+    [attr.aria-hidden]="!isMobileFiltersOpen"
+  ></div>
+  <section
+    class="filters-drawer"
+    [class.open]="isMobileFiltersOpen"
+    role="dialog"
+    [attr.aria-modal]="isMobileFiltersOpen"
+    aria-label="Order filters"
+    [attr.aria-hidden]="!isMobileFiltersOpen"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="filters-drawer-header">
+      <h3>Filters</h3>
+      <button type="button" class="filters-drawer-close" (click)="closeMobileFilters()" aria-label="Close filters">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </header>
+    <div class="filters-drawer-content">
+      <app-order-filters (filterChange)="onFilterChange($event)"></app-order-filters>
+    </div>
+  </section>
 </div>

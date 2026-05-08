@@ -12,9 +12,25 @@ import { AccountProfileComponent } from './pages/my-account/account-profile/acco
 import { AccountOrdersComponent } from './pages/my-account/account-orders/account-orders';
 import { OrderDetailComponent } from './pages/order-detail/order-detail';
 import { authGuard } from './services/auth.guard';
+import { guestAuthGuard } from './services/guest-auth.guard';
+import { AuthPage } from './pages/auth-page/auth-page';
+import { ForgotPasswordPage } from './pages/forgot-password-page/forgot-password-page';
 
 export const routes: Routes = [
   { path: '', component: Home },
+  {
+    path: 'sign-in',
+    component: AuthPage,
+    canActivate: [guestAuthGuard],
+    data: { authMode: 'signin' },
+  },
+  {
+    path: 'sign-up',
+    component: AuthPage,
+    canActivate: [guestAuthGuard],
+    data: { authMode: 'signup' },
+  },
+  { path: 'forgot-password', component: ForgotPasswordPage, canActivate: [guestAuthGuard] },
   { path: 'new-in', component: NewInPage },
   { path: 'category/:slug', component: CategoryPage },
   { path: 'product/:id', component: ProductDetailPage },
@@ -31,6 +47,10 @@ export const routes: Routes = [
   },
   { path: 'help', component: HelpSupportPage },
   { path: 'order/:id', component: OrderDetailComponent, canActivate: [authGuard] },
-  { path: 'reset-password/:uid/:token', component: ResetPasswordPageComponent },
+  {
+    path: 'reset-password/:uid/:token',
+    component: ResetPasswordPageComponent,
+    canActivate: [guestAuthGuard],
+  },
   { path: '**', redirectTo: '' },
 ];

@@ -66,14 +66,14 @@
             <mat-icon>person outline</mat-icon>
           }
         </button>
-        <app-account-menu
-          [isOpen]="isAccountMenuOpen"
-          (closeMenu)="closeAccountMenu()"
-          (signIn)="onSignIn()"
-          (signUp)="onSignup()"
-          (wishlistClick)="onWishlistClick()"
-        >
-        </app-account-menu>
+        @if (isAuthenticated) {
+          <app-account-menu
+            [isOpen]="isAccountMenuOpen"
+            (closeMenu)="closeAccountMenu()"
+            (wishlistClick)="onWishlistClick()"
+          >
+          </app-account-menu>
+        }
       </div>
     </div>
   </div>
@@ -98,9 +98,30 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <button type="button" class="mobile-nav__link mobile-nav__link--btn" (click)="onMobileCollections()">
-    All collections
+  <button
+    type="button"
+    class="mobile-nav__link mobile-nav__link--accordion"
+    (click)="toggleMobileCategories()"
+    [attr.aria-expanded]="isMobileCategoriesOpen"
+  >
+    <span>All collections</span>
+    <mat-icon class="mobile-nav__chevron" [class.mobile-nav__chevron--open]="isMobileCategoriesOpen">
+      expand_more
+    </mat-icon>
   </button>
+  @if (isMobileCategoriesOpen) {
+    <div class="mobile-nav__sublist" role="list">
+      <a
+        class="mobile-nav__sublink"
+        *ngFor="let category of categories"
+        [routerLink]="['/category', category.slug]"
+        (click)="onMobileCategoryClick()"
+        role="listitem"
+      >
+        {{ category.name }}
+      </a>
+    </div>
+  }
   <a
     class="mobile-nav__link"
     routerLink="/new-in"
@@ -109,7 +130,6 @@
   >
     New in
   </a>
-  <a class="mobile-nav__link" routerLink="/" (click)="closeMobileNav()">Shop all</a>
 </nav>
 
 <app-collections-drawer [isOpen]="isCollectionsDrawerOpen" (closeDrawer)="closeCollectionsDrawer()">

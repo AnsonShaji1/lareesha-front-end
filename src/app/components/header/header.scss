@@ -241,6 +241,15 @@
   flex-direction: column;
   pointer-events: none;
   border-right: 1px solid var(--ll-border);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge legacy */
+}
+.mobile-nav__panel::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 .mobile-nav__panel--open {
   transform: translate3d(0, 0, 0);
@@ -252,9 +261,10 @@
   justify-content: space-between;
   padding: 8px 16px 20px 20px;
   border-bottom: 1px solid var(--ll-border);
-  font-size: 11px;
+  font-family: var(--ll-font-body);
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ll-muted);
 }
@@ -283,10 +293,11 @@
 .mobile-nav__link {
   display: block;
   padding: 16px 24px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-family: var(--ll-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: none;
   text-decoration: none;
   color: var(--ll-text);
   border: none;
@@ -306,6 +317,60 @@
   }
   &.active {
     color: var(--ll-gold);
+  }
+}
+
+.mobile-nav__link--accordion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  span {
+    font-weight: 600;
+    color: var(--ll-text);
+  }
+}
+
+.mobile-nav__chevron {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  color: var(--ll-muted);
+  transition: transform 0.2s var(--ll-ease), color 0.2s var(--ll-ease);
+}
+.mobile-nav__chevron--open {
+  transform: rotate(180deg);
+  color: var(--ll-gold);
+}
+
+.mobile-nav__sublist {
+  background: var(--ll-surface);
+  border-bottom: 1px solid var(--ll-border);
+  padding: 6px 0 10px;
+}
+
+.mobile-nav__sublink {
+  display: block;
+  padding: 12px 24px 12px 32px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  text-decoration: none;
+  color: var(--ll-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, padding-left 0.2s var(--ll-ease);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--ll-gold-soft);
+    color: var(--ll-gold);
+    padding-left: 36px;
+    outline: none;
   }
 }
 @media (max-width: 768px) {

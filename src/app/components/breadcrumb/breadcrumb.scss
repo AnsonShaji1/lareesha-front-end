@@ -1,7 +1,8 @@
 .breadcrumb-nav {
   background: var(--ll-surface);
-  border-bottom: 1px solid #e0e0e0;
-  padding: 1rem;
+  border-bottom: 1px solid var(--ll-border);
+  padding: 0.875rem 1rem;
+  font-family: var(--ll-font-body);
   position: sticky;
   top: var(--app-header-height);
   z-index: 10;
@@ -14,6 +15,12 @@
     padding: 0;
     max-width: 100%;
     overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+
+    &::-webkit-scrollbar {
+      height: 0;
+    }
 
     .breadcrumb-item {
       display: flex;
@@ -27,7 +34,8 @@
         border: none;
         color: var(--ll-gold);
         cursor: pointer;
-        font-size: 0.9375rem;
+        font-size: var(--ll-text-md);
+        font-weight: 500;
         padding: 0;
         text-decoration: none;
         transition: color 0.2s ease;
@@ -39,13 +47,14 @@
       }
 
       .breadcrumb-current {
-        color: #666;
-        font-size: 0.9375rem;
+        color: var(--ll-muted);
+        font-size: var(--ll-text-md);
+        font-weight: 400;
       }
 
       .breadcrumb-separator {
-        color: #ccc;
-        font-size: 1.25rem;
+        color: var(--ll-border-strong);
+        font-size: 1.15rem;
         margin: 0 0.25rem;
       }
     }

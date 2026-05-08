@@ -9,13 +9,12 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NotificationService } from '../../services/notification.service';
 import { AddressService } from '../../services/address.service';
-import { AddressDialogComponent } from '../../components/address-dialog/address-dialog';
+import { AddressEditorOpenerService } from '../../services/address-editor-opener.service';
 
 export interface Address {
   id: number;
@@ -41,7 +40,6 @@ export interface Address {
     ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -56,7 +54,7 @@ export class ManageAddressesComponent implements OnInit {
   constructor(
     private addressService: AddressService,
     private notificationService: NotificationService,
-    private dialog: MatDialog,
+    private addressEditorOpener: AddressEditorOpenerService,
   ) {}
 
   ngOnInit() {
@@ -78,12 +76,7 @@ export class ManageAddressesComponent implements OnInit {
   }
 
   openAddDialog() {
-    const dialogRef = this.dialog.open(AddressDialogComponent, {
-      width: '500px',
-      data: null,
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
+    this.addressEditorOpener.open(null).subscribe((result) => {
       if (result) {
         this.loadAddresses();
       }
@@ -91,12 +84,7 @@ export class ManageAddressesComponent implements OnInit {
   }
 
   editAddress(address: Address) {
-    const dialogRef = this.dialog.open(AddressDialogComponent, {
-      width: '500px',
-      data: address,
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
+    this.addressEditorOpener.open(address).subscribe((result) => {
       if (result) {
         this.loadAddresses();
       }

@@ -20,6 +20,19 @@ export interface Address {
   updated_at: string;
 }
 
+export interface PincodeValidationResponse {
+  valid: boolean;
+  pincode?: string;
+  cities?: string[];
+  states?: string[];
+  post_offices?: Array<{
+    name: string;
+    city: string;
+    state: string;
+  }>;
+  error?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -78,5 +91,12 @@ export class AddressService {
       { address_id: id },
       { headers: this.getAuthHeaders() },
     );
+  }
+
+  validatePincode(pincode: string): Observable<PincodeValidationResponse> {
+    return this.http.get<PincodeValidationResponse>(`${this.baseUrl}/validate_pincode/`, {
+      headers: this.getAuthHeaders(),
+      params: { pincode },
+    });
   }
 }

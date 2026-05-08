@@ -12,6 +12,8 @@ import { CartService } from '../../services/cart';
 import { Wishlist } from '../../services/wishlist';
 import { AuthService, User } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
+import { ApiService } from '../../services/api.service';
+import { Category } from '../../models/category';
 
 @Component({
   selector: 'app-header',
@@ -39,6 +41,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isMobileNavOpen = false;
   isAuthenticated = false;
   currentUser: User | null = null;
+  categories: Category[] = [];
+  isMobileCategoriesOpen = false;
 
   private cartSubscription?: Subscription;
   private wishlistSubscription?: Subscription;
@@ -46,13 +50,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @Output() searchClick = new EventEmitter<void>();
   @Output() signInClick = new EventEmitter<void>();
-  @Output() signUpClick = new EventEmitter<void>();
   @Output() cartClick = new EventEmitter<void>();
 
   constructor(
     private cartService: CartService,
     private wishlistService: Wishlist,
     private authService: AuthService,
+    private api: ApiService,
   ) {}
 
   ngOnInit() {
@@ -70,6 +74,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.authService.currentUser$.subscribe((user: User | null) => {
       this.currentUser = user;
+    });
+
+    this.api.getCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats;
+      },
+      error: (err) => {
+        console.error('Header: failed to load categories', err);
+        this.categories = [];
+      },
     });
   }
 
@@ -97,7 +111,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return;
     }
     this.isMobileNavOpen = false;
+    this.isMobileCategoriesOpen = false;
     document.body.style.overflow = '';
+  }
+
+  toggleMobileCategories(): void {
+    this.isMobileCategoriesOpen = !this.isMobileCategoriesOpen;
+  }
+
+  onMobileCategoryClick(): void {
+    this.closeMobileNav();
   }
 
   onMobileCollections(): void {
@@ -122,23 +145,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onAccountClick() {
     console.log('Account icon clicked');
+    if (!this.isAuthenticated) {
+      this.signInClick.emit();
+      return;
+    }
     this.isAccountMenuOpen = !this.isAccountMenuOpen;
   }
 
   closeAccountMenu() {
     this.isAccountMenuOpen = false;
-  }
-
-  onSignIn() {
-    console.log('Sign in event from account menu');
-    this.signInClick.emit();
-    this.closeAccountMenu();
-  }
-
-  onSignup() {
-    console.log('Sign up event from account menu');
-    this.signUpClick.emit();
-    this.closeAccountMenu();
   }
 
   onCartClick() {

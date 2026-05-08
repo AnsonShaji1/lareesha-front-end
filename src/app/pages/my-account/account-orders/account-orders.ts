@@ -34,6 +34,7 @@ export class AccountOrdersComponent implements OnInit {
   orders: Order[] = [];
   filteredOrders: Order[] = [];
   isLoading = false;
+  isMobileFiltersOpen = false;
   searchQuery = '';
   activeFilters: FilterOptions = {
     orderStatuses: [],
@@ -154,7 +155,18 @@ export class AccountOrdersComponent implements OnInit {
 
   onFilterChange(filters: FilterOptions) {
     this.activeFilters = filters;
+    if (this.isMobileFiltersOpen) {
+      this.closeMobileFilters();
+    }
     this.loadOrders(filters, this.searchQuery);
+  }
+
+  openMobileFilters() {
+    this.isMobileFiltersOpen = true;
+  }
+
+  closeMobileFilters() {
+    this.isMobileFiltersOpen = false;
   }
 
   getStatusInfo(status: string) {

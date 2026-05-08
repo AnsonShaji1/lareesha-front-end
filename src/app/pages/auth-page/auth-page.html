@@ -1,0 +1,12 @@
+<div class="auth-page">
+  <div class="auth-page__inner">
+    <div class="auth-page__layout">
+      <div class="app-auth-panel">
+        <app-auth-form
+          [mode]="authMode"
+          (authenticated)="onAuthenticated($event)"
+        />
+      </div>
+    </div>
+  </div>
+</div>

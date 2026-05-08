@@ -2,7 +2,6 @@
   <app-header
     (searchClick)="openSearch()"
     (signInClick)="openSignIn()"
-    (signUpClick)="openSignUp()"
     (cartClick)="openCart()"
   >
   </app-header>
@@ -11,20 +10,6 @@
   </main>
   <app-site-footer></app-site-footer>
   <app-search-modal [isOpen]="isSearchOpen" (closeModal)="closeSearch()"> </app-search-modal>
-  <app-auth-modal
-    [isOpen]="isAuthModalOpen"
-    [mode]="authMode"
-    (closeModal)="closeAuthModal()"
-    (authenticated)="onAuthenticated($event)"
-    (forgotPassword)="openForgotPassword()"
-  >
-  </app-auth-modal>
-  <app-forgot-password-modal
-    [isOpen]="isForgotPasswordOpen"
-    (closeModal)="closeForgotPassword()"
-    (backToSignIn)="backToSignIn()"
-  >
-  </app-forgot-password-modal>
   <app-cart-drawer
     [isOpen]="isCartOpen"
     (closeDrawer)="closeCart()"

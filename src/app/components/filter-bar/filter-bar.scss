@@ -2,7 +2,6 @@
   position: relative;
 }
 
-// ============ TOP FILTER BAR ============
 .filter-bar {
   background: var(--ll-surface);
   border-bottom: 1px solid var(--ll-border);
@@ -26,25 +25,25 @@
   margin-bottom: 16px;
 }
 
-
-// ============ FILTER BUTTON ============
 .filter-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 42px;
-  padding: 0 14px;
+  min-height: 38px;
+  padding: 0 12px;
   background: var(--ll-surface);
   border: 1px solid var(--ll-border-strong);
   border-radius: var(--ll-radius-sm);
   cursor: pointer;
   font-family: var(--ll-font-body);
-  font-size: 12px;
+  font-size: var(--ll-text-xs);
   font-weight: 600;
-  letter-spacing: 0.8px;
-  color: var(--ll-text);
+  letter-spacing: 0.08em;
+  color: var(--ll-muted);
   position: relative;
-  text-transform: uppercase;
+  text-transform: none;
+  transition: background 160ms var(--ll-ease), border-color 160ms var(--ll-ease),
+    color 160ms var(--ll-ease), transform 160ms var(--ll-ease);
 
   mat-icon {
     font-size: 18px;
@@ -53,13 +52,14 @@
   }
 
   &:hover {
-    border-color: var(--ll-text);
-    background: var(--ll-surface-2);
+    border-color: var(--ll-gold);
+    color: var(--ll-gold);
+    background: color-mix(in srgb, var(--ll-gold-soft) 22%, var(--ll-surface) 78%);
   }
 
   &.has-active {
-    border-color: var(--ll-text);
-    background: var(--ll-text);
+    border-color: var(--ll-gold);
+    background: var(--ll-gold);
     color: #fff;
 
     mat-icon {
@@ -85,18 +85,19 @@
   }
 }
 
-// ============ SORT DROPDOWN ============
 .sort-dropdown {
   display: flex;
   align-items: center;
   gap: 10px;
 
   .sort-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
+    font-size: var(--ll-text-xs);
     color: var(--ll-muted);
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     white-space: nowrap;
+    text-transform: none;
   }
 
   .sort-field {
@@ -120,7 +121,13 @@
   ::ng-deep .sort-field:hover .mdc-notched-outline__leading,
   ::ng-deep .sort-field:hover .mdc-notched-outline__notch,
   ::ng-deep .sort-field:hover .mdc-notched-outline__trailing {
-    border-color: var(--ll-text) !important;
+    border-color: var(--ll-gold) !important;
+  }
+
+  ::ng-deep .sort-field.mat-focused .mdc-notched-outline__leading,
+  ::ng-deep .sort-field.mat-focused .mdc-notched-outline__notch,
+  ::ng-deep .sort-field.mat-focused .mdc-notched-outline__trailing {
+    border-color: var(--ll-gold) !important;
   }
 
   ::ng-deep .sort-field .mat-mdc-select-value-text,
@@ -129,14 +136,18 @@
   }
 
   ::ng-deep .sort-field .mat-mdc-select-value-text {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
   }
 
+  ::ng-deep .sort-field .mat-mdc-select-arrow {
+    color: var(--ll-muted);
+  }
+
   ::ng-deep .sort-field .mat-mdc-form-field-infix {
-    min-height: 42px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    min-height: 38px;
+    padding-top: 9px;
+    padding-bottom: 9px;
   }
 
   ::ng-deep .sort-field .mat-mdc-select-trigger,
@@ -153,16 +164,33 @@
 
 ::ng-deep .ll-sort-panel {
   font-family: var(--ll-font-body);
+  background: var(--ll-surface);
+  border-radius: 10px;
+  border: 1px solid var(--ll-border-strong, #e8e8e8);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
 ::ng-deep .ll-sort-panel .mat-mdc-option .mdc-list-item__primary-text {
   font-family: var(--ll-font-body);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.2px;
 }
 
-// ============ ACTIVE FILTERS ============
+::ng-deep .ll-sort-panel .mat-mdc-option {
+  border-radius: 8px;
+  min-height: 36px;
+}
+
+::ng-deep .ll-sort-panel .mat-mdc-option.mdc-list-item--selected {
+  background: color-mix(in srgb, var(--ll-gold-soft) 35%, var(--ll-surface) 65%);
+}
+
+::ng-deep .ll-sort-panel .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+  color: #000;
+  font-weight: 600;
+}
+
 .active-filters {
   display: flex;
   flex-wrap: wrap;
@@ -218,7 +246,6 @@
   }
 }
 
-// ============ FILTER OVERLAY ============
 .filter-overlay {
   position: fixed;
   top: var(--app-header-height);
@@ -230,7 +257,6 @@
   backdrop-filter: blur(2px);
 }
 
-// ============ FILTER DRAWER ============
 .filter-drawer {
   position: fixed;
   top: var(--app-header-height);
@@ -310,7 +336,6 @@
   background: var(--ll-surface);
 }
 
-// ============ FILTER SECTIONS ============
 .filter-section {
   margin-bottom: 16px;
 
@@ -341,7 +366,6 @@
     color: #1b1b1b;
     margin: 0;
     padding: 16px 0 13px;
-    border-top: 1px solid var(--ll-border);
     width: 100%;
 
     &::after {
@@ -364,7 +388,11 @@
 
 }
 
-// ============ CATEGORY LIST ============
+/* Divider should appear between sections, not at the very top/bottom */
+.filter-section + .filter-section .section-title {
+  border-top: 1px solid var(--ll-border);
+}
+
 .category-list {
   display: flex;
   flex-direction: column;
@@ -397,7 +425,6 @@
 
 }
 
-// ============ PRICE RANGE ============
 .price-display {
   margin-top: 8px;
   margin-bottom: 10px;
@@ -488,7 +515,6 @@
   }
 }
 
-// ============ DRAWER FOOTER ============
 .drawer-footer {
   display: flex;
   flex-direction: column;
@@ -543,11 +569,6 @@
   }
 }
 
-// ============ ANIMATIONS ============
-// removed entry animations to meet Angular style budgets
-
-// ============ RESPONSIVE ============
-
 @media (max-width: 768px) {
   .filter-bar {
     padding: 12px 16px;
@@ -555,17 +576,58 @@
   }
 
   .filter-controls {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .filter-btn {
+    width: auto;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 11px;
+    letter-spacing: 0.2px;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .sort-dropdown {
-    width: 100%;
+    flex: 1 1 auto;
+    width: auto;
+    justify-content: flex-end;
+    gap: 8px;
+
+    .sort-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
 
     .sort-field {
       width: 100%;
       min-width: 0;
+    }
+
+    /* Match FILTER button sizing on mobile */
+    ::ng-deep .sort-field .mat-mdc-form-field-infix {
+      min-height: 36px;
+      padding-top: 7px !important;
+      padding-bottom: 7px !important;
+    }
+
+    ::ng-deep .sort-field .mat-mdc-select-value-text {
+      font-size: 11px;
+    }
+
+    ::ng-deep .sort-field .mat-mdc-select-arrow {
+      transform: none;
     }
   }
 
@@ -593,9 +655,10 @@
     }
   }
 
-  .drawer-content {
-    padding: 12px 18px 20px;
-  }
+  // .drawer-content {
+  //   /* avoid extra bottom strip above footer border */
+  //   padding: 12px 18px 0;
+  // }
 
   .section-title {
     font-size: 11px;

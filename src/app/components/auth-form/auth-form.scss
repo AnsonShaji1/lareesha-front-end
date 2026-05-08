@@ -1,119 +1,33 @@
-.auth-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 2000;
-  display: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  align-items: center;
-  justify-content: center;
-
-  &.active {
-    display: flex !important;
-    opacity: 1;
-  }
-}
-
-.auth-container {
-  background: var(--ll-surface);
-  width: 90%;
-  max-width: 480px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  animation: slideup 0.3s ease;
-}
-
-@keyframes slideup {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.close-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 5;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border-radius: 50%;
-  background: var(--ll-surface);
-  transition: background-color 0.2s var(--ll-ease), color 0.2s var(--ll-ease);
-  pointer-events: auto;
-
-  &:hover {
-    background: var(--ll-gold-soft);
-    color: var(--ll-gold);
-  }
-
-  mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    margin: 0;
-  }
-}
-
-::ng-deep .close-btn .mat-mdc-button-persistent-ripple::before {
-  opacity: 0 !important;
-}
-
-.auth-tabs {
-  display: flex;
-  border-bottom: 1px solid #e0e0e0;
-  padding-right: 44px;
-}
-.tab-btn {
-  flex: 1;
-  padding: 16px 14px;
-  background: none;
-  border: none;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.3s;
-  position: relative;
-  font-family: inherit;
-
-  &.active {
-    color: var(--ll-gold);
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--ll-gold);
-    }
-  }
-
-  &:hover:not(.active) {
-    color: var(--ll-gold-hover);
-  }
-}
-
 .auth-form {
-  padding: 40px 32px;
+  .auth-header {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+
+  .auth-header__brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--ll-gold-soft) 65%, #ffffff 35%);
+    border: 1px solid var(--ll-gold-border);
+    text-decoration: none;
+  }
+
+  .auth-header__logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  .auth-header__text {
+    min-width: 0;
+  }
 
   h2 {
     font-size: 21px;
@@ -125,7 +39,26 @@
   .subtitle {
     font-size: 13px;
     color: var(--ll-muted);
-    margin: 0 0 24px 0;
+    margin: 0;
+  }
+}
+
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: #ffebee;
+  color: #c62828;
+  font-size: 13px;
+  border-radius: 4px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
   }
 }
 
@@ -174,23 +107,39 @@
   color: var(--ll-gold) !important;
 }
 
-.checkbox-group {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 24px;
+/* Make password eye subtle (less "highlighted") */
+::ng-deep .auth-field .password-toggle.mat-mdc-icon-button {
+  --mat-icon-button-state-layer-color: transparent;
+  --mat-icon-button-ripple-color: transparent;
+  color: var(--ll-muted);
+  opacity: 0.75;
+}
 
-  input[type='checkbox'] {
-    margin-top: 4px;
-    cursor: pointer;
-  }
+::ng-deep .auth-field .password-toggle.mat-mdc-icon-button:hover {
+  opacity: 1;
+  color: var(--ll-gold-hover);
+}
 
-  label {
-    font-size: 13px;
-    color: #666;
-    cursor: pointer;
-    line-height: 1.5;
-  }
+::ng-deep .auth-field .password-toggle.mat-mdc-icon-button:disabled {
+  opacity: 0.45;
+}
+
+::ng-deep .auth-field .password-toggle .mat-mdc-button-touch-target {
+  width: 40px;
+  height: 40px;
+}
+
+::ng-deep .auth-field .password-toggle mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Reduce focus ring intensity while keeping keyboard accessibility */
+::ng-deep .auth-field .password-toggle:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ll-gold) 55%, #ffffff 45%);
+  outline-offset: 2px;
+  border-radius: 999px;
 }
 
 .forgot-link {
@@ -226,7 +175,6 @@
   }
 }
 
-// Shared submit-button hook for sign-in and create-account.
 .auth-submit-btn {
   --mdc-filled-button-container-color: var(--ll-gold);
   --mdc-filled-button-disabled-container-color: color-mix(in srgb, var(--ll-gold) 45%, #ffffff 55%);
@@ -290,12 +238,6 @@
   &:hover {
     background: var(--ll-surface-2);
   }
-
-  mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-  }
 }
 
 .btn-google {
@@ -350,14 +292,21 @@
   }
 }
 
-@media (max-width: 768px) {
-  .auth-container {
-    width: 100%;
-    max-width: 100%;
-    max-height: 100vh;
-  }
+.auth-switch {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ll-muted);
 
-  .auth-form {
-    padding: 32px 24px;
+  a {
+    color: var(--ll-gold);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 4px;
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--ll-gold-hover);
+    }
   }
 }

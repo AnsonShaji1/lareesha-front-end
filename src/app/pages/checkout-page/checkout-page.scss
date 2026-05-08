@@ -131,22 +131,39 @@
   }
 }
 
-.btn-place-order {
+/* Primary checkout CTA — use global `ll-cta` (Material filled buttons use M3 pill + theme, not on-brand) */
+.btn-place-order.ll-cta {
   width: 100%;
-  background: var(--ll-gold);
-  color: white;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
   min-height: 48px;
-  transition: background 0.3s;
-  font-family: var(--ll-font-body);
-  border-radius: 0;
-  --mdc-filled-button-container-color: var(--ll-gold);
-  --mdc-filled-button-label-text-color: #fff;
+  margin-top: 8px;
 
-  &:hover {
-    background: var(--ll-gold-hover);
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-place-order--desktop {
+    display: none !important;
+  }
+
+  .btn-place-order--mobile {
+    display: flex;
+    margin-top: 18px;
+  }
+
+  .btn-place-order.ll-cta {
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 769px) {
+  .btn-place-order--mobile {
+    display: none;
   }
 }
 
@@ -210,6 +227,17 @@
       padding-top: 12px;
       border-top: 1px solid #e0e0e0;
       margin-bottom: 20px;
+    }
+  }
+
+  .total-row-note {
+    margin-top: -6px;
+
+    .note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #666;
+      flex: 1 1 auto;
     }
   }
 }

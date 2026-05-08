@@ -14,12 +14,9 @@ import { NotificationService } from '../../services/notification.service';
 export class AccountMenu implements OnInit {
   @Input() isOpen = false;
   @Output() closeMenu = new EventEmitter<void>();
-  @Output() signIn = new EventEmitter<void>();
-  @Output() signUp = new EventEmitter<void>();
   @Output() signOut = new EventEmitter<void>();
   @Output() wishlistClick = new EventEmitter<void>();
 
-  isLoggedIn = false;
   currentUser: User | null = null;
 
   constructor(
@@ -29,9 +26,6 @@ export class AccountMenu implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.isAuthenticated$.subscribe((isAuth) => {
-      this.isLoggedIn = isAuth;
-    });
     this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
     });
@@ -61,18 +55,6 @@ export class AccountMenu implements OnInit {
 
   close() {
     this.closeMenu.emit();
-  }
-
-  onSignIn() {
-    console.log('Sign In clicked');
-    this.signIn.emit();
-    this.close();
-  }
-
-  onSignUp() {
-    console.log('Create Account clicked');
-    this.signUp.emit();
-    this.close();
   }
 
   onSignOut(event: Event) {

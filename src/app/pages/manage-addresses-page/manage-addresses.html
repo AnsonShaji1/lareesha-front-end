@@ -1,7 +1,7 @@
 <div class="manage-addresses-container">
   <div class="header">
     <h2>My Addresses</h2>
-    <button mat-raised-button color="primary" (click)="openAddDialog()">
+    <button type="button" class="ll-cta ll-cta--primary btn-add-address" (click)="openAddDialog()">
       <mat-icon>add</mat-icon>
       Add New Address
     </button>
@@ -15,7 +15,7 @@
     <div class="empty-state">
       <mat-icon>location_off</mat-icon>
       <p>No addresses saved yet</p>
-      <button mat-stroked-button color="primary" (click)="openAddDialog()">
+      <button type="button" class="ll-cta ll-cta--outline-dark btn-add-first" (click)="openAddDialog()">
         Add your first address
       </button>
     </div>

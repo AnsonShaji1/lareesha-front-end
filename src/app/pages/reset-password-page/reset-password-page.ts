@@ -124,8 +124,25 @@ export class ResetPasswordPageComponent implements OnInit {
       return null;
     }
 
-    return passwordControl.value === confirmPasswordControl.value
-      ? null
-      : { passwordMismatch: true };
+    const mismatch = passwordControl.value !== confirmPasswordControl.value;
+
+    // Angular Material shows <mat-error> only when the *field* is in error state.
+    // So we mirror the group mismatch error onto the confirm control without
+    // clobbering other validation errors like "required".
+    const existingErrors = confirmPasswordControl.errors || {};
+
+    if (mismatch) {
+      if (!existingErrors['passwordMismatch']) {
+        confirmPasswordControl.setErrors({ ...existingErrors, passwordMismatch: true });
+      }
+      return { passwordMismatch: true };
+    }
+
+    if (existingErrors['passwordMismatch']) {
+      const { passwordMismatch, ...rest } = existingErrors;
+      confirmPasswordControl.setErrors(Object.keys(rest).length ? rest : null);
+    }
+
+    return null;
   }
 }
