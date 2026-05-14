@@ -77,7 +77,7 @@
     <!-- Orders List -->
     <div *ngIf="!isLoading && filteredOrders.length > 0" class="orders-list">
       <mat-card *ngFor="let order of filteredOrders" class="order-card">
-        <!-- Row 1: Order ID, Date, Total, Status, Message, and View Button -->
+        <!-- Row 1: Order ID, Date, Total, Status, Message -->
         <div class="order-card-row-1">
           <div class="order-info">
             <h3 class="order-number">Order #{{ order.order_number }}</h3>
@@ -132,16 +132,6 @@
             </div>
             <p class="order-message">{{ getOrderMessage(order) }}</p>
           </div>
-
-          <button
-            mat-flat-button
-            class="btn-view-details"
-            type="button"
-            [routerLink]="['/order', order.id]"
-          >
-            <span>View Details</span>
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
         </div>
 
         <!-- Row 2: Items -->
@@ -155,6 +145,16 @@
             </div>
           </div>
         </div>
+
+        <button
+          mat-flat-button
+          class="btn-view-details"
+          type="button"
+          [routerLink]="['/order', order.id]"
+        >
+          <span>View Details</span>
+          <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
+        </button>
       </mat-card>
     </div>
   </main>

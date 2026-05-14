@@ -11,6 +11,7 @@ const ADDRESS_EDITOR_MOBILE = '(max-width: 600px)';
 /**
  * Opens the shared address editor as a centered dialog on larger screens,
  * or as a bottom sheet on narrow viewports (clearer mobile UX).
+ * Backdrop/outside taps do not dismiss — only explicit Close / Cancel in the component.
  */
 @Injectable({ providedIn: 'root' })
 export class AddressEditorOpenerService {
@@ -33,6 +34,7 @@ export class AddressEditorOpenerService {
       width: '600px',
       maxWidth: '95vw',
       data: payload,
+      disableClose: true,
     });
     return ref.afterClosed();
   }

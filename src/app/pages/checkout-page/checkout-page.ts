@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Injector, afterNextRender } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +21,8 @@ import { Subscription, finalize } from 'rxjs';
   styleUrl: './checkout-page.scss',
 })
 export class CheckoutPage implements OnInit, OnDestroy {
+  private readonly injector = inject(Injector);
+
   cartItems: CartItem[] = [];
   subtotal = 0;
   shipping = 0;
@@ -390,6 +392,14 @@ export class CheckoutPage implements OnInit, OnDestroy {
         this.isProcessing = false;
         this.notificationService.success('Payment successful!');
         this.orderPlaced = true;
+
+        // User often returns from Razorpay with scroll still at the bottom; success UI is at the top
+        afterNextRender(
+          () => {
+            globalThis.scrollTo?.({ top: 0, left: 0, behavior: 'smooth' });
+          },
+          { injector: this.injector },
+        );
 
         // Clear cart after successful order
         this.cartService.clearCart();
