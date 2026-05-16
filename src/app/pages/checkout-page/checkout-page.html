@@ -125,9 +125,7 @@
             <p class="item-name">{{ item.product.name }}</p>
             <p class="item-meta">Qty: {{ item.quantity }}</p>
           </div>
-          <p class="item-price">
-            ₹{{ (item.product.salePrice || item.product.originalPrice) * item.quantity }}
-          </p>
+            <p class="item-price">₹{{ lineItemTotal(item).toFixed(2) }}</p>
         </div>
       </div>
 

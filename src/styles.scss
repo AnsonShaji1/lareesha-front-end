@@ -21,7 +21,14 @@ $my-theme: mat.m2-define-light-theme((
 :root {
   --ll-font-body: 'Roboto', 'Helvetica Neue', sans-serif;
   --ll-font-display: 'Cormorant Garamond', 'Times New Roman', serif;
-  --ll-display-weight: 500;
+
+  /* Font weights — must match index.html Google Fonts weights */
+  --ll-weight-light: 300;
+  --ll-weight-regular: 400;
+  --ll-weight-medium: 500;
+  --ll-weight-semibold: 600;
+
+  --ll-display-weight: var(--ll-weight-medium);
   --ll-display-line-height: 1.05;
   --ll-display-letter-spacing: 0.5px;
 
@@ -182,19 +189,29 @@ textarea {
   font-family: var(--ll-font-body);
 }
 
-// Use serif only for premium display headings
-h1,
+// Display serif for page titles (not toolbar logo / PDP — those have dedicated rules below)
+h1:not(.hero__title):not(.product-title):not(.logo-full):not(.logo-text),
 .ll-display-heading,
 .category-header h1,
 .page-header h1,
 .drawer-header h2 {
   font-family: var(--ll-font-display);
   font-weight: var(--ll-display-weight);
+  font-style: normal;
   line-height: var(--ll-display-line-height);
   letter-spacing: var(--ll-display-letter-spacing);
+  font-synthesis: none;
   text-rendering: geometricPrecision;
 }
-  
+
+// Material toolbar uses Roboto via `font` shorthand — reset on toolbar only, not children
+.mat-toolbar.header {
+  font-family: var(--ll-font-body);
+  font-size: 14px;
+  font-weight: var(--ll-weight-regular);
+  line-height: 1.43;
+}
+
 // Override Material toolbar color
 .mat-toolbar {
   background: var(--ll-surface) !important;

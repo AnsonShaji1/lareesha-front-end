@@ -6,7 +6,7 @@ import {
   importProvidersFrom,
 } from '@angular/core';
 
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { provideAnimations } from '@angular/platform-browser/animations';
 
@@ -34,7 +34,13 @@ export const appConfig: ApplicationConfig = {
 
     provideZoneChangeDetection({ eventCoalescing: true }),
 
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'top',
+        anchorScrolling: 'enabled',
+      }),
+    ),
 
     provideAnimations(),
 

@@ -148,8 +148,10 @@ export class CartService {
 
   getTotal(): number {
     return this.cartItems.reduce((total, item) => {
-      const price = item.product.salePrice || item.product.originalPrice;
-      return total + price * item.quantity;
+      const raw = item.product.salePrice;
+      const price = typeof raw === 'string' ? parseFloat(raw) : Number(raw);
+      const safe = Number.isFinite(price) ? price : 0;
+      return total + safe * item.quantity;
     }, 0);
   }
 

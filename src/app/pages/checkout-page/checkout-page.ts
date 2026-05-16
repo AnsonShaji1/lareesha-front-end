@@ -98,6 +98,13 @@ export class CheckoutPage implements OnInit, OnDestroy {
     private addressEditorOpener: AddressEditorOpenerService,
   ) {}
 
+  lineItemTotal(item: CartItem): number {
+    const raw = item.product.salePrice;
+    const price = typeof raw === 'string' ? parseFloat(raw) : Number(raw);
+    const safe = Number.isFinite(price) ? price : 0;
+    return safe * item.quantity;
+  }
+
   ngOnInit() {
     this.subscription = this.cartService.cartItems$.subscribe((items: CartItem[]) => {
       this.cartItems = items;
