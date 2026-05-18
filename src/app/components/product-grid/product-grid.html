@@ -3,7 +3,7 @@
     <p class="product-count">({{ totalCount || products.length }} Products)</p>
   </div>
 
-  <div class="product-grid">
+  <div class="product-grid" [class.product-grid--cols-3]="gridColumns === 3">
     @for (product of products; track product.id) {
       <app-product-card
         [product]="product"

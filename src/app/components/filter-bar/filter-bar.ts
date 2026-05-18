@@ -44,6 +44,8 @@ export interface CategoryOption {
 })
 export class FilterBarComponent implements OnInit {
   @Input() hideCategory = false;
+  /** When true, only the sort dropdown is shown (used on category pages). */
+  @Input() sortOnly = false;
   @Input() categories: CategoryOption[] = [];
   @Output() filterChange = new EventEmitter<FilterOptions>();
   @Output() resetFilters = new EventEmitter<void>();
@@ -56,13 +58,13 @@ export class FilterBarComponent implements OnInit {
   appliedCategories: string[] = []; // slugs
   selectedPriceSort?: 'low-to-high' | 'high-to-low';
   minPrice: number = 0;
-  maxPrice: number = 10000;
+  maxPrice: number = 5000;
 
   // Range slider properties
   minPriceInput: number = 0;
-  maxPriceInput: number = 10000;
+  maxPriceInput: number = 5000;
   readonly MIN_PRICE = 0;
-  readonly MAX_PRICE = 10000;
+  readonly MAX_PRICE = 5000;
 
   showFilterDrawer = false;
   isMobile = false;
@@ -192,6 +194,9 @@ export class FilterBarComponent implements OnInit {
   }
 
   hasActiveFilters(): boolean {
+    if (this.sortOnly) {
+      return !!this.selectedPriceSort;
+    }
     return (
       (!this.hideCategory && this.appliedCategories.length > 0) ||
       !!this.selectedPriceSort ||

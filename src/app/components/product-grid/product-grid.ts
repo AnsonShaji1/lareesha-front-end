@@ -23,6 +23,8 @@ import { ProductCard } from '../product-card/product-card';
 })
 export class ProductGridComponent implements AfterViewInit, OnDestroy {
   @Input() products: Product[] = [];
+  /** Number of columns on desktop (default 4). */
+  @Input() gridColumns: 3 | 4 = 4;
   @Input() totalCount = 0;
   @Input() hasMore = false;
   @Input() isLoading = false;

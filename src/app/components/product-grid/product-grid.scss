@@ -19,6 +19,11 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 32px 24px;
+
+  &--cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px 20px;
+  }
 }
 .empty-state {
   grid-column: 1 / -1;
@@ -45,6 +50,10 @@
   .product-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 28px 20px;
+
+    &.product-grid--cols-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 }
 @media (max-width: 768px) {

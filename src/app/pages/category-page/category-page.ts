@@ -1,7 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FilterBarComponent, FilterOptions } from '../../components/filter-bar/filter-bar';
+import {
+  FilterBarComponent,
+  FilterOptions,
+  CategoryOption,
+} from '../../components/filter-bar/filter-bar';
+import { CategorySidebarComponent } from '../../components/category-sidebar/category-sidebar';
 import { ProductGridComponent } from '../../components/product-grid/product-grid';
 import { ProductService } from '../../services/product';
 import { Product } from '../../models/product';
@@ -10,17 +16,29 @@ import { ApiService } from '../../services/api.service';
 @Component({
   selector: 'app-category-page',
   standalone: true,
-  imports: [CommonModule, FilterBarComponent, ProductGridComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FilterBarComponent,
+    CategorySidebarComponent,
+    ProductGridComponent,
+    MatIconModule,
+  ],
   templateUrl: './category-page.html',
   styleUrl: './category-page.scss',
 })
-export class CategoryPage implements OnInit {
+export class CategoryPage implements OnInit, OnDestroy {
   products: Product[] = [];
-  categorySlug: string = '';
-  pageTitle: string = '';
+  categorySlug = '';
+  pageTitle = '';
+  categories: CategoryOption[] = [];
   totalCount = 0;
   hasMore = true;
   isLoading = false;
+  isMobileFiltersOpen = false;
+
+  private priceSort?: 'low-to-high' | 'high-to-low';
+  private priceRange?: { min?: number; max?: number };
 
   constructor(
     private productService: ProductService,
@@ -43,30 +61,75 @@ export class CategoryPage implements OnInit {
       this.isLoading = isLoading;
     });
 
+    this.api.getCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats.map((c) => ({ name: c.name, slug: c.slug }));
+      },
+      error: () => {
+        this.categories = [];
+      },
+    });
+
     this.route.params.subscribe((params) => {
       this.categorySlug = params['slug'];
       this.pageTitle = this.categorySlug;
+      this.priceSort = undefined;
+      this.priceRange = undefined;
+
       this.api.getCategory(this.categorySlug).subscribe({
         next: (cat) => {
           this.pageTitle = cat.name;
         },
         error: () => {
-          // Keep fallback title (slug) if category lookup fails
           this.pageTitle = this.categorySlug;
         },
       });
-      this.productService.filterProducts([this.categorySlug]);
+
+      this.applyProductFilters();
+      this.closeMobileFilters();
     });
   }
 
-  onFilterChange(filters: FilterOptions) {
-    const categories =
-      filters.categories && filters.categories.length > 0 ? filters.categories : [this.categorySlug];
-    this.productService.filterProducts(categories, filters.priceSort, filters.priceRange);
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
   }
 
-  onResetFilters() {
-    this.productService.filterProducts([this.categorySlug]);
+  @HostListener('document:keydown.escape')
+  onEscapeClose(): void {
+    this.closeMobileFilters();
+  }
+
+  openMobileFilters(): void {
+    this.isMobileFiltersOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeMobileFilters(): void {
+    if (!this.isMobileFiltersOpen) {
+      return;
+    }
+    this.isMobileFiltersOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  onSidebarFilterChange(filters: FilterOptions): void {
+    this.priceRange = filters.priceRange;
+    this.applyProductFilters();
+  }
+
+  onSidebarReset(): void {
+    this.priceRange = undefined;
+    this.applyProductFilters();
+  }
+
+  onSortChange(filters: FilterOptions): void {
+    this.priceSort = filters.priceSort;
+    this.applyProductFilters();
+  }
+
+  onSortReset(): void {
+    this.priceSort = undefined;
+    this.applyProductFilters();
   }
 
   openProductDetail(product: Product) {
@@ -75,5 +138,12 @@ export class CategoryPage implements OnInit {
 
   onLoadMore() {
     this.productService.loadNextPage();
+  }
+
+  private applyProductFilters(): void {
+    if (!this.categorySlug) {
+      return;
+    }
+    this.productService.filterProducts([this.categorySlug], this.priceSort, this.priceRange);
   }
 }

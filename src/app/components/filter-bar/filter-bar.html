@@ -1,20 +1,22 @@
-<div class="filter-bar-wrapper">
+<div class="filter-bar-wrapper" [class.filter-bar-wrapper--sort-only]="sortOnly">
   <!-- Top Filter Bar -->
-  <div class="filter-bar">
+  <div class="filter-bar" [class.filter-bar--sort-only]="sortOnly">
     <div class="filter-bar-content">
-      <div class="filter-controls">
-        <!-- Filter Button -->
-        <button
-          class="filter-btn"
-          (click)="openFilterDrawer()"
-          [class.has-active]="hasActiveFilters()"
-        >
-          <mat-icon>tune</mat-icon>
-          <span>Filter</span>
-          @if (hasActiveFilters()) {
-            <span class="filter-badge">{{ getActiveFilterCount() }}</span>
-          }
-        </button>
+      <div class="filter-controls" [class.filter-controls--sort-only]="sortOnly">
+        @if (!sortOnly) {
+          <!-- Filter Button -->
+          <button
+            class="filter-btn"
+            (click)="openFilterDrawer()"
+            [class.has-active]="hasActiveFilters()"
+          >
+            <mat-icon>tune</mat-icon>
+            <span>Filter</span>
+            @if (hasActiveFilters()) {
+              <span class="filter-badge">{{ getActiveFilterCount() }}</span>
+            }
+          </button>
+        }
 
         <!-- Sort By Dropdown -->
         <div class="sort-dropdown">
@@ -35,7 +37,7 @@
       </div>
 
       <!-- Active Filters Chips -->
-      @if (hasActiveFilters()) {
+      @if (!sortOnly && hasActiveFilters()) {
         <div class="active-filters">
           @for (category of appliedCategories; track category) {
             <div class="filter-chip">
@@ -58,11 +60,12 @@
   </div>
 
   <!-- Filter Drawer Overlay -->
-  @if (showFilterDrawer) {
+  @if (!sortOnly && showFilterDrawer) {
     <div class="filter-overlay" (click)="closeFilterDrawer()"></div>
   }
 
   <!-- Right-Side Filter Drawer -->
+  @if (!sortOnly) {
   <div class="filter-drawer" [class.open]="showFilterDrawer">
     <!-- Drawer Header -->
     <div class="drawer-header">
@@ -148,4 +151,5 @@
       <button class="btn-apply" (click)="applyFilters()">APPLY FILTERS</button>
     </div>
   </div>
+  }
 </div>

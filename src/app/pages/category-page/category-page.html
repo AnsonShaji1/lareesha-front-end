@@ -1,26 +1,102 @@
 <div class="category-page">
-  <div class="category-header">
-    <h1>{{ pageTitle }}</h1>
+  <div class="category-page__layout">
+    <aside class="category-page__sidebar">
+      <app-category-sidebar
+        [categories]="categories"
+        [activeSlug]="categorySlug"
+        (filterChange)="onSidebarFilterChange($event)"
+        (resetFilters)="onSidebarReset()"
+      />
+    </aside>
 
-    <p class="category-description">
-      Discover our exquisite collection of {{ pageTitle.toLowerCase() }}
-    </p>
+    <main class="category-page__main">
+      <nav class="category-page__breadcrumb" aria-label="Breadcrumb">
+        <a routerLink="/">Home</a>
+        <span class="category-page__breadcrumb-sep" aria-hidden="true">›</span>
+        <span class="category-page__breadcrumb-current">{{ pageTitle }}</span>
+      </nav>
+
+      <div class="category-page__title-row">
+        <header class="category-page__header">
+          <h1>{{ pageTitle }}</h1>
+        </header>
+
+        <app-filter-bar
+          class="category-page__sort category-page__sort--desktop"
+          [sortOnly]="true"
+          (filterChange)="onSortChange($event)"
+          (resetFilters)="onSortReset()"
+        />
+      </div>
+
+      <div class="category-page__mobile-actions">
+        <button
+          type="button"
+          class="category-page__filter-btn"
+          (click)="openMobileFilters()"
+          aria-haspopup="dialog"
+          [attr.aria-expanded]="isMobileFiltersOpen"
+        >
+          <mat-icon aria-hidden="true">tune</mat-icon>
+          <span>Filter</span>
+        </button>
+
+        <app-filter-bar
+          class="category-page__sort category-page__sort--mobile"
+          [sortOnly]="true"
+          (filterChange)="onSortChange($event)"
+          (resetFilters)="onSortReset()"
+        />
+      </div>
+
+      <app-product-grid
+        [products]="products"
+        [gridColumns]="3"
+        [totalCount]="totalCount"
+        [hasMore]="hasMore"
+        [isLoading]="isLoading"
+        (productClick)="openProductDetail($event)"
+        (loadMore)="onLoadMore()"
+      />
+    </main>
   </div>
 
-  <app-filter-bar
-    [hideCategory]="true"
-    (filterChange)="onFilterChange($event)"
-    (resetFilters)="onResetFilters()"
+  <div
+    class="category-page__sheet-overlay"
+    [class.category-page__sheet-overlay--open]="isMobileFiltersOpen"
+    (click)="closeMobileFilters()"
+    role="presentation"
+    [attr.aria-hidden]="!isMobileFiltersOpen"
+  ></div>
+  <section
+    class="category-page__sheet"
+    [class.category-page__sheet--open]="isMobileFiltersOpen"
+    role="dialog"
+    [attr.aria-modal]="isMobileFiltersOpen"
+    aria-label="Browse and filter"
+    [attr.aria-hidden]="!isMobileFiltersOpen"
+    (click)="$event.stopPropagation()"
   >
-  </app-filter-bar>
-
-  <app-product-grid
-    [products]="products"
-    [totalCount]="totalCount"
-    [hasMore]="hasMore"
-    [isLoading]="isLoading"
-    (productClick)="openProductDetail($event)"
-    (loadMore)="onLoadMore()"
-  >
-  </app-product-grid>
+    <header class="category-page__sheet-header">
+      <h2 class="category-page__sheet-title">Browse &amp; filter</h2>
+      <button
+        type="button"
+        class="category-page__sheet-close"
+        (click)="closeMobileFilters()"
+        aria-label="Close"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+    <div class="category-page__sheet-body">
+      <app-category-sidebar
+        layout="panel"
+        [categories]="categories"
+        [activeSlug]="categorySlug"
+        (filterChange)="onSidebarFilterChange($event)"
+        (resetFilters)="onSidebarReset()"
+        (closePanel)="closeMobileFilters()"
+      />
+    </div>
+  </section>
 </div>
