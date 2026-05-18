@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
   currentUser: User | null = null;
   categories: Category[] = [];
-  isMobileCategoriesOpen = false;
+  isCollectionsDropdownOpen = false;
 
   private cartSubscription?: Subscription;
   private wishlistSubscription?: Subscription;
@@ -95,10 +95,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('document:keydown.escape')
-  onEscapeCloseMobile(): void {
+  onEscapeClose(): void {
     if (this.isMobileNavOpen) {
       this.closeMobileNav();
     }
+    this.closeCollectionsDropdown();
+  }
+
+  openCollectionsDropdown(): void {
+    this.isCollectionsDropdownOpen = true;
+  }
+
+  closeCollectionsDropdown(): void {
+    this.isCollectionsDropdownOpen = false;
+  }
+
+  onCollectionsCategoryClick(): void {
+    this.closeCollectionsDropdown();
   }
 
   toggleMobileNav(): void {
@@ -111,20 +124,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return;
     }
     this.isMobileNavOpen = false;
-    this.isMobileCategoriesOpen = false;
     document.body.style.overflow = '';
   }
 
-  toggleMobileCategories(): void {
-    this.isMobileCategoriesOpen = !this.isMobileCategoriesOpen;
-  }
-
   onMobileCategoryClick(): void {
-    this.closeMobileNav();
-  }
-
-  onMobileCollections(): void {
-    this.isCollectionsDrawerOpen = true;
     this.closeMobileNav();
   }
 

@@ -24,9 +24,42 @@
       </div>
     </div>
     <nav class="nav-menu">
-      <button class="nav-link collections-btn" (click)="onCollectionsClick()">
-        ALL COLLECTIONS
-      </button>
+      <div
+        class="nav-collections"
+        [class.nav-collections--open]="isCollectionsDropdownOpen"
+        (mouseenter)="openCollectionsDropdown()"
+        (mouseleave)="closeCollectionsDropdown()"
+      >
+        <button
+          type="button"
+          class="nav-link collections-btn"
+          aria-haspopup="true"
+          [attr.aria-expanded]="isCollectionsDropdownOpen"
+        >
+          ALL COLLECTIONS
+          <mat-icon class="nav-collections__chevron" aria-hidden="true">expand_more</mat-icon>
+        </button>
+        <div class="nav-collections__dropdown" role="menu" aria-label="All collections">
+          <div class="nav-collections__panel">
+            @if (categories.length) {
+              <div class="nav-collections__list">
+                @for (category of categories; track category.id) {
+                  <a
+                    class="nav-collections__link"
+                    [routerLink]="['/category', category.slug]"
+                    role="menuitem"
+                    (click)="onCollectionsCategoryClick()"
+                  >
+                    {{ category.name }}
+                  </a>
+                }
+              </div>
+            } @else {
+              <p class="nav-collections__empty">No categories available</p>
+            }
+          </div>
+        </div>
+      </div>
       <a routerLink="/new-in" class="nav-link" routerLinkActive="active">NEW IN</a>
     </nav>
     <div class="header-actions">
@@ -98,29 +131,14 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <button
-    type="button"
-    class="mobile-nav__link mobile-nav__link--accordion"
-    (click)="toggleMobileCategories()"
-    [attr.aria-expanded]="isMobileCategoriesOpen"
-  >
-    <span>All collections</span>
-    <mat-icon class="mobile-nav__chevron" [class.mobile-nav__chevron--open]="isMobileCategoriesOpen">
-      expand_more
-    </mat-icon>
-  </button>
-  @if (isMobileCategoriesOpen) {
-    <div class="mobile-nav__sublist" role="list">
-      <a
-        class="mobile-nav__sublink"
-        *ngFor="let category of categories"
-        [routerLink]="['/category', category.slug]"
-        (click)="onMobileCategoryClick()"
-        role="listitem"
-      >
-        {{ category.name }}
-      </a>
-    </div>
+  @for (category of categories; track category.id) {
+    <a
+      class="mobile-nav__link"
+      [routerLink]="['/category', category.slug]"
+      (click)="onMobileCategoryClick()"
+    >
+      {{ category.name }}
+    </a>
   }
   <a
     class="mobile-nav__link"
