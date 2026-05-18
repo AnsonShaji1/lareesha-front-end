@@ -17,6 +17,13 @@
 .category-page__sidebar {
   position: sticky;
   top: calc(var(--app-header-height) + 16px);
+
+  @media (min-width: 901px) {
+    ::ng-deep .category-sidebar {
+      border: 1px solid var(--ll-border);
+      background: var(--ll-surface);
+    }
+  }
 }
 
 .category-page__main {
