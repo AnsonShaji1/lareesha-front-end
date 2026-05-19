@@ -1,14 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { ProductGridComponent } from '../../components/product-grid/product-grid';
-import { FilterBarComponent, FilterOptions, CategoryOption } from '../../components/filter-bar/filter-bar';
+import {
+  FilterBarComponent,
+  FilterOptions,
+  CategoryOption,
+} from '../../components/filter-bar/filter-bar';
 import { ProductService } from '../../services/product';
 import { Product } from '../../models/product';
 import { ApiService } from '../../services/api.service';
+
 @Component({
   selector: 'app-new-in-page',
-  imports: [CommonModule, FilterBarComponent, ProductGridComponent],
+  imports: [CommonModule, MatIconModule, FilterBarComponent, ProductGridComponent],
   templateUrl: './new-in-page.html',
   styleUrl: './new-in-page.scss',
 })
@@ -19,18 +25,28 @@ export class NewInPage implements OnInit {
     { name: 'Rings', slug: 'rings' },
     { name: 'Bracelets', slug: 'bracelets' },
   ];
+
+  @ViewChild('filterBar') filterBar?: FilterBarComponent;
+
   products: Product[] = [];
   availableCategories: CategoryOption[] = [...this.fallbackCategories];
   private categoriesLoadedFromApi = false;
   totalCount = 0;
   hasMore = true;
   isLoading = false;
+  isMobileLayout = false;
+
+  private activeFilters: FilterOptions = {};
+
   constructor(
     private productService: ProductService,
     private api: ApiService,
     private router: Router,
   ) {}
+
   ngOnInit() {
+    this.updateMobileLayout();
+
     this.api.getCategories().subscribe({
       next: (cats) => {
         this.availableCategories = cats.map((c) => ({ name: c.name, slug: c.slug }));
@@ -38,7 +54,6 @@ export class NewInPage implements OnInit {
       },
       error: (err) => {
         console.error('NewInPage: failed to load categories', err);
-        // keep fallback until we derive from products
         this.availableCategories = [...this.fallbackCategories];
         this.categoriesLoadedFromApi = false;
       },
@@ -71,6 +86,15 @@ export class NewInPage implements OnInit {
     this.productService.loadNewInProducts();
   }
 
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.updateMobileLayout();
+  }
+
+  openMobileFilters(): void {
+    this.filterBar?.openFilterDrawer();
+  }
+
   openProductDetail(product: Product) {
     this.router.navigate(['/product', product.id]);
   }
@@ -80,10 +104,40 @@ export class NewInPage implements OnInit {
   }
 
   onFilterChange(filters: FilterOptions) {
-    this.productService.filterNewInProducts(filters.categories, filters.priceSort, filters.priceRange);
+    this.activeFilters.categories = filters.categories;
+    this.activeFilters.priceRange = filters.priceRange;
+    if (!this.isMobileLayout || filters.priceSort !== undefined) {
+      this.activeFilters.priceSort = filters.priceSort;
+    }
+    this.applyActiveFilters();
+  }
+
+  onSortChange(filters: FilterOptions) {
+    this.activeFilters.priceSort = filters.priceSort;
+    this.applyActiveFilters();
+  }
+
+  onSortReset() {
+    this.activeFilters.priceSort = undefined;
+    this.applyActiveFilters();
   }
 
   onResetFilters() {
+    this.activeFilters = {};
     this.productService.resetNewInFilters();
+  }
+
+  private applyActiveFilters(): void {
+    this.productService.filterNewInProducts(
+      this.activeFilters.categories,
+      this.activeFilters.priceSort,
+      this.activeFilters.priceRange,
+    );
+  }
+
+  private updateMobileLayout(): void {
+    if (typeof window !== 'undefined') {
+      this.isMobileLayout = window.innerWidth <= 900;
+    }
   }
 }

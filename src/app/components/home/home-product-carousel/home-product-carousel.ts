@@ -41,9 +41,17 @@ export class HomeProductCarouselComponent implements AfterViewInit, OnChanges, O
   currentIndex = 0;
   itemsPerView = 4;
   slideWidthPx = 0;
+  animateTransitions = false;
+  isSliding = false;
+  isMobileScroll = false;
+  activeMobilePage = 0;
 
+  private static readonly MOBILE_BREAKPOINT = 600;
   private resizeObserver?: ResizeObserver;
   private layoutFrame?: number;
+  private prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   get sectionId(): string {
     return this.title
@@ -89,20 +97,34 @@ export class HomeProductCarouselComponent implements AfterViewInit, OnChanges, O
     return this.slideWidthPx > 0 && this.currentIndex < this.maxIndex;
   }
 
-  get trackTransform(): string {
-    if (!this.slideWidthPx) {
-      return 'translate3d(0, 0, 0)';
+  get trackTransformStyle(): string | null {
+    if (this.isMobileScroll || this.usePartialRow || !this.slideWidthPx) {
+      return null;
     }
     return `translate3d(-${this.currentIndex * this.slideWidthPx}px, 0, 0)`;
   }
 
-  get showNav(): boolean {
-    return this.products.length > this.itemsPerView;
+  get showDesktopNav(): boolean {
+    return !this.isMobileScroll && this.products.length > this.itemsPerView;
+  }
+
+  get showMobilePagination(): boolean {
+    return this.isMobileScroll && this.mobilePageCount > 1;
+  }
+
+  get mobilePageCount(): number {
+    return Math.ceil(this.products.length / this.itemsPerView);
+  }
+
+  get mobilePages(): number[] {
+    return Array.from({ length: this.mobilePageCount }, (_, i) => i);
   }
 
   /** Fewer products than visible slots — centered row, same card width as carousel. */
   get usePartialRow(): boolean {
-    return !this.showNav && this.products.length > 0;
+    return (
+      this.products.length > 0 && this.products.length < this.itemsPerView
+    );
   }
 
   get showViewAll(): boolean {
@@ -118,15 +140,82 @@ export class HomeProductCarouselComponent implements AfterViewInit, OnChanges, O
   }
 
   prev(): void {
-    if (this.canGoPrev) {
-      this.currentIndex -= 1;
+    if (!this.canGoPrev || this.isSliding) {
+      return;
     }
+    const previousIndex = this.currentIndex;
+    if (
+      this.currentIndex === this.maxIndex &&
+      this.currentIndex % this.itemsPerView !== 0
+    ) {
+      this.currentIndex =
+        Math.floor(this.maxIndex / this.itemsPerView) * this.itemsPerView;
+    } else {
+      this.currentIndex = Math.max(0, this.currentIndex - this.itemsPerView);
+    }
+    this.beginSlide(previousIndex);
   }
 
   next(): void {
-    if (this.canGoNext) {
-      this.currentIndex += 1;
+    if (!this.canGoNext || this.isSliding) {
+      return;
     }
+    const previousIndex = this.currentIndex;
+    this.currentIndex = Math.min(
+      this.currentIndex + this.itemsPerView,
+      this.maxIndex,
+    );
+    this.beginSlide(previousIndex);
+  }
+
+  onTrackTransitionEnd(event: TransitionEvent): void {
+    if (
+      event.target !== event.currentTarget ||
+      event.propertyName !== 'transform'
+    ) {
+      return;
+    }
+    this.isSliding = false;
+  }
+
+  onViewportScroll(): void {
+    if (!this.isMobileScroll) {
+      return;
+    }
+    const viewport = this.viewportRef?.nativeElement;
+    if (!viewport || viewport.clientWidth <= 0) {
+      return;
+    }
+    const page = Math.round(viewport.scrollLeft / viewport.clientWidth);
+    this.activeMobilePage = Math.min(
+      Math.max(0, page),
+      this.mobilePageCount - 1,
+    );
+  }
+
+  goToMobilePage(page: number): void {
+    const viewport = this.viewportRef?.nativeElement;
+    if (!viewport || !this.isMobileScroll) {
+      return;
+    }
+    const clamped = Math.min(Math.max(0, page), this.mobilePageCount - 1);
+    viewport.scrollTo({
+      left: clamped * viewport.clientWidth,
+      behavior: this.prefersReducedMotion ? 'auto' : 'smooth',
+    });
+    this.activeMobilePage = clamped;
+  }
+
+  private beginSlide(previousIndex: number): void {
+    if (
+      this.prefersReducedMotion ||
+      !this.animateTransitions ||
+      previousIndex === this.currentIndex
+    ) {
+      this.isSliding = false;
+      return;
+    }
+    this.isSliding = true;
   }
 
   private scheduleLayoutUpdate(): void {
@@ -160,12 +249,19 @@ export class HomeProductCarouselComponent implements AfterViewInit, OnChanges, O
       return;
     }
 
+    this.animateTransitions = false;
+    this.isSliding = false;
+
     const width = viewport.clientWidth;
     if (width <= 0) {
       return;
     }
 
-    if (width < 480) {
+    const wasMobileScroll = this.isMobileScroll;
+    this.isMobileScroll =
+      width < HomeProductCarouselComponent.MOBILE_BREAKPOINT;
+
+    if (this.isMobileScroll) {
       this.itemsPerView = 2;
     } else if (width < 900) {
       this.itemsPerView = 3;
@@ -189,5 +285,45 @@ export class HomeProductCarouselComponent implements AfterViewInit, OnChanges, O
     if (this.currentIndex > this.maxIndex) {
       this.currentIndex = this.maxIndex;
     }
+    if (!this.isMobileScroll) {
+      this.snapToPage();
+    }
+
+    if (wasMobileScroll !== this.isMobileScroll) {
+      viewport.scrollLeft = 0;
+      this.currentIndex = 0;
+      this.activeMobilePage = 0;
+    }
+
+    if (this.isMobileScroll) {
+      this.onViewportScroll();
+      this.animateTransitions = false;
+      this.isSliding = false;
+    } else {
+      this.enableTransitionsAfterLayout();
+    }
+  }
+
+  private enableTransitionsAfterLayout(): void {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.animateTransitions =
+          !this.prefersReducedMotion && !this.isMobileScroll;
+      });
+    });
+  }
+
+  /** Keep index aligned to a page boundary after resize. */
+  private snapToPage(): void {
+    if (this.currentIndex <= 0) {
+      this.currentIndex = 0;
+      return;
+    }
+    if (this.currentIndex >= this.maxIndex) {
+      this.currentIndex = this.maxIndex;
+      return;
+    }
+    this.currentIndex =
+      Math.floor(this.currentIndex / this.itemsPerView) * this.itemsPerView;
   }
 }

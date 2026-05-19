@@ -76,6 +76,15 @@ $my-theme: mat.m2-define-light-theme((
   --ll-text-2xl: clamp(1.85rem, 1.3rem + 1.6vw, 2.75rem);
 }
 
+@media (max-width: 600px) {
+  :root {
+    --ll-text-xl: clamp(1.2rem, 2.5vw + 0.75rem, 1.45rem);
+    --ll-text-2xl: clamp(1.25rem, 3.5vw + 0.65rem, 1.5rem);
+    --ll-display-line-height: 1.15;
+    --ll-display-letter-spacing: 0.02em;
+  }
+}
+
 /* Address editor bottom sheet (`AddressEditorOpenerService`) — panelClass on container */
 .mat-bottom-sheet-container.ll-address-bottom-sheet-panel {
   padding: 0;

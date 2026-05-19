@@ -1,23 +1,16 @@
-@import '../home-section.scss';
-
-.home-categories .home-section__header {
-  gap: 0;
-}
+@use '../home-section';
 
 .home-categories__grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 28px 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 16px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .home-categories__item {
-  flex: 0 0 auto;
-  width: clamp(96px, 18vw, 132px);
+  min-width: 0;
 }
 
 .home-categories__card {
@@ -98,27 +91,22 @@
   color: var(--ll-muted);
 }
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
   .home-categories__grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 32px 28px;
   }
 
-  .home-categories__item {
-    width: 132px;
+  .home-categories__label {
+    font-size: var(--ll-text-md);
+    letter-spacing: 0.05em;
   }
 }
 
-@media (max-width: 480px) {
-  .home-categories__grid {
-    gap: 22px 16px;
-  }
-
-  .home-categories__item {
-    width: clamp(88px, 28vw, 108px);
-  }
-
+@media (max-width: 767px) {
   .home-categories__label {
-    font-size: 10px;
+    font-size: 13px;
     letter-spacing: 0.05em;
+    color: var(--ll-gold);
   }
 }

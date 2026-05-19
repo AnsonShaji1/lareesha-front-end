@@ -1,9 +1,5 @@
-<section class="home-section home-categories" aria-labelledby="home-categories-title">
+<section class="home-section home-categories" aria-label="Categories">
   <div class="home-section__inner">
-    <header class="home-section__header">
-      <h2 id="home-categories-title" class="home-section__title">Shop by Category</h2>
-    </header>
-
     @if (isLoading) {
       <div class="home-categories__status" aria-live="polite">Loading categories…</div>
     } @else if (categories.length) {

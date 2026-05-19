@@ -68,6 +68,17 @@ $home-section-stack-gap: 40px;
     margin-bottom: 24px;
   }
 
+  .home-section__title {
+    font-size: clamp(1.15rem, 3.2vw + 0.6rem, 1.35rem);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+
+    &::after {
+      width: 40px;
+      margin-top: 10px;
+    }
+  }
+
   .home-categories.home-section {
     padding-top: $home-section-stack-gap;
   }

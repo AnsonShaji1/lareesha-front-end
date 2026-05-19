@@ -156,7 +156,7 @@
   }
 
   .category-page__header h1 {
-    font-size: 1.45rem;
+    font-size: clamp(1.15rem, 3.5vw + 0.55rem, 1.4rem);
     line-height: 1.15;
   }
 
