@@ -192,7 +192,6 @@
   padding: 16px 20px;
   background: var(--ll-surface);
   border: 1px solid var(--ll-border);
-  border-radius: var(--ll-radius-md);
   box-shadow: var(--ll-shadow-md);
   scrollbar-width: thin;
   scrollbar-color: var(--ll-border-strong) transparent;
@@ -214,7 +213,7 @@
   font-weight: 500;
   line-height: 1.35;
   text-decoration: none;
-  text-transform: capitalize;
+  text-transform: uppercase;
   color: var(--ll-text);
   white-space: normal;
   word-break: break-word;

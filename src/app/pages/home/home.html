@@ -15,26 +15,40 @@
     <p class="hero__sub">Timeless master pieces—crafted to move with you, day to night.</p>
     <div class="hero__actions">
       <button type="button" class="ll-cta ll-cta--primary" (click)="scrollToShop()">Shop now</button>
-      <a class="ll-cta ll-cta--ghost" routerLink="/new-in">Explore collection</a>
+      <a class="ll-cta ll-cta--ghost" routerLink="/new-in">New arrivals</a>
     </div>
   </div>
 </section>
 
-<div id="shop" class="home-shop">
-  <app-filter-bar
-    [categories]="categories"
-    (filterChange)="onFilterChange($event)"
-    (resetFilters)="onResetFilters()"
-  >
-  </app-filter-bar>
+<div id="shop">
+  <app-home-category-grid
+    [categories]="homepageCategories"
+    [isLoading]="homepageLoading"
+  ></app-home-category-grid>
 
-  <app-product-grid
-    [products]="products"
-    [totalCount]="totalCount"
-    [hasMore]="hasMore"
-    [isLoading]="isLoading"
+  <app-home-product-carousel
+    title="New Arrivals"
+    viewAllLink="/new-in"
+    [products]="newArrivals"
+    [totalCount]="newArrivalsCount"
+    [isLoading]="homepageLoading"
+    loadingMessage="Loading new arrivals…"
+    emptyMessage="No new arrivals yet. Check back soon."
+    [sectionBottomSpacing]="categorySections.length === 0"
     (productClick)="openProductDetail($event)"
-    (loadMore)="onLoadMore()"
-  >
-  </app-product-grid>
+  ></app-home-product-carousel>
+
+  @for (section of categorySections; track section.category.slug; let last = $last) {
+    <app-home-product-carousel
+      [title]="section.category.name"
+      [viewAllLink]="['/category', section.category.slug]"
+      [products]="section.products"
+      [totalCount]="section.productCount"
+      [isLoading]="homepageLoading"
+      [loadingMessage]="'Loading ' + section.category.name + '…'"
+      [emptyMessage]="'No products in ' + section.category.name + ' yet.'"
+      [sectionBottomSpacing]="last"
+      (productClick)="openProductDetail($event)"
+    />
+  }
 </div>

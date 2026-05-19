@@ -103,7 +103,7 @@ export class BreadcrumbComponent implements OnInit, OnChanges {
       profile: 'Profile Information',
       checkout: 'Checkout',
       'product-detail': 'Product Detail',
-      'new-in': 'New In',
+      'new-in': 'New Arrivals',
       category: 'Category',
     };
 

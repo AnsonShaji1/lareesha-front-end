@@ -5,7 +5,12 @@
     @if (product.availableStock === 0) {
       <div class="out-of-stock-badge">OUT OF STOCK</div>
     } @else {
-      <button class="add-button" (click)="addToCart()" aria-label="Add to cart">
+      <button
+        class="add-button"
+        type="button"
+        (click)="$event.stopPropagation(); addToCart()"
+        aria-label="Add to cart"
+      >
         <span class="material-symbols-outlined">shopping_cart</span>
       </button>
     }

@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Product } from '../models/product';
 import { Category } from '../models/category';
+import { HomepageData } from '../models/homepage';
 
 export interface PaginatedResponse<T> {
   count: number;
@@ -124,6 +125,57 @@ export class ApiService {
 
   getProducts(paramsInput: ProductListParams = {}): Observable<Product[]> {
     return this.getProductsPage(paramsInput).pipe(map((response) => response.results));
+  }
+
+  getHomepage(options?: {
+    includeNewArrivals?: boolean;
+    includeCategorySections?: boolean;
+    sectionLimit?: number;
+  }): Observable<HomepageData> {
+    let params = new HttpParams();
+    if (options?.includeNewArrivals === false) {
+      params = params.set('include_new_arrivals', 'false');
+    }
+    if (options?.includeCategorySections === false) {
+      params = params.set('include_category_sections', 'false');
+    }
+    if (options?.sectionLimit !== undefined) {
+      params = params.set('section_limit', String(options.sectionLimit));
+    }
+
+    return this.http
+      .get<{
+        categories: Array<{ id: number; name: string; slug: string; image_url?: string | null }>;
+        new_arrivals?: Product[];
+        new_arrivals_count?: number;
+        category_sections?: Array<{
+          category: { id: number; name: string; slug: string; image_url?: string | null };
+          products: Product[];
+          product_count: number;
+        }>;
+      }>(`${this.baseUrl}/homepage/`, { params, withCredentials: true })
+      .pipe(
+        map((payload) => ({
+          categories: payload.categories.map((c) => ({
+            id: c.id,
+            name: c.name,
+            slug: c.slug,
+            imageUrl: c.image_url ?? null,
+          })),
+          newArrivals: payload.new_arrivals ?? [],
+          newArrivalsCount: payload.new_arrivals_count ?? 0,
+          categorySections: (payload.category_sections ?? []).map((section) => ({
+            category: {
+              id: section.category.id,
+              name: section.category.name,
+              slug: section.category.slug,
+              imageUrl: section.category.image_url ?? null,
+            },
+            products: section.products,
+            productCount: section.product_count,
+          })),
+        })),
+      );
   }
 
   getCategories(): Observable<Category[]> {

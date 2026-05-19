@@ -1,0 +1,82 @@
+// Vertical gap between stacked homepage sections (hero → categories → new arrivals)
+$home-section-stack-gap: 40px;
+
+.home-section {
+  padding: 0;
+  background: var(--ll-bg);
+}
+
+.home-section__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.home-section__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.home-section__title {
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  font-family: var(--ll-font-display);
+  font-size: clamp(1.65rem, 1.15rem + 1.4vw, 2.25rem);
+  font-weight: var(--ll-display-weight);
+  line-height: var(--ll-display-line-height);
+  letter-spacing: var(--ll-display-letter-spacing);
+  text-transform: none;
+  color: var(--ll-gold);
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+
+  &::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 1px;
+    margin: 14px auto 0;
+    background: var(--ll-gold-border);
+  }
+}
+
+.home-categories.home-section {
+  padding-top: $home-section-stack-gap;
+}
+
+.home-product-carousel.home-section {
+  padding-top: $home-section-stack-gap;
+}
+
+.home-product-carousel.home-section.home-product-carousel--spaced-bottom {
+  padding-bottom: 48px;
+}
+
+@media (max-width: 600px) {
+  $home-section-stack-gap: 32px;
+
+  .home-section__inner {
+    padding: 0 20px;
+  }
+
+  .home-section__header {
+    margin-bottom: 24px;
+  }
+
+  .home-categories.home-section {
+    padding-top: $home-section-stack-gap;
+  }
+
+  .home-product-carousel.home-section {
+    padding-top: $home-section-stack-gap;
+  }
+
+  .home-product-carousel.home-section.home-product-carousel--spaced-bottom {
+    padding-bottom: 36px;
+  }
+}

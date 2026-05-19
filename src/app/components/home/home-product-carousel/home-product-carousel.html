@@ -1,0 +1,70 @@
+<section
+  class="home-section home-product-carousel"
+  [class.home-product-carousel--spaced-bottom]="sectionBottomSpacing"
+  [attr.aria-labelledby]="sectionId ? 'home-section-' + sectionId : null"
+>
+  <div class="home-section__inner">
+    <header class="home-section__header home-product-carousel__header">
+      <h2 [id]="'home-section-' + sectionId" class="home-section__title">{{ displayTitle }}</h2>
+      @if (showViewAll) {
+        <a [routerLink]="viewAllLink" class="home-product-carousel__view-all">View All</a>
+      }
+      <span class="home-product-carousel__rule" aria-hidden="true"></span>
+    </header>
+
+    @if (isLoading) {
+      <div class="home-product-carousel__status" aria-live="polite">{{ loadingMessage }}</div>
+    } @else if (products.length) {
+      <div class="home-product-carousel__carousel">
+        @if (showNav) {
+          <button
+            type="button"
+            class="home-product-carousel__nav home-product-carousel__nav--prev"
+            (click)="prev()"
+            [disabled]="!canGoPrev"
+            aria-label="Previous products"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+          </button>
+        }
+
+        <div
+          #viewport
+          class="home-product-carousel__viewport"
+          [class.home-product-carousel__viewport--partial]="usePartialRow"
+          role="region"
+          [attr.aria-label]="carouselLabel"
+        >
+          <div
+            class="home-product-carousel__track"
+            [class.home-product-carousel__track--partial]="usePartialRow"
+            [style.transform]="usePartialRow ? null : trackTransform"
+          >
+            @for (product of products; track product.id) {
+              <div class="home-product-carousel__slide">
+                <app-product-card
+                  [product]="product"
+                  (click)="productClick.emit(product)"
+                ></app-product-card>
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (showNav) {
+          <button
+            type="button"
+            class="home-product-carousel__nav home-product-carousel__nav--next"
+            (click)="next()"
+            [disabled]="!canGoNext"
+            aria-label="Next products"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </button>
+        }
+      </div>
+    } @else {
+      <p class="home-product-carousel__status">{{ emptyMessage }}</p>
+    }
+  </div>
+</section>

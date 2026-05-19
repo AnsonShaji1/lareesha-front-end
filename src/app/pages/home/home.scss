@@ -87,25 +87,10 @@
   align-items: center;
 }
 
-.home-shop {
+#shop {
   scroll-margin-top: calc(var(--app-header-height) + 8px);
   flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
   min-width: 0;
-
-  /* Home: keep 2 products per row on mobile (match category page) */
-  ::ng-deep .product-grid {
-    @media (max-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px 12px;
-    }
-
-    @media (max-width: 480px) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px 10px;
-    }
-  }
 }
 
 @media (max-width: 600px) {

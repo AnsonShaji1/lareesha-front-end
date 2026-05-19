@@ -1,6 +1,14 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
 .product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   cursor: pointer;
-  background: var(--ll-surface);
+  background: transparent;
   position: relative;
 
   @media (hover: hover) and (pointer: fine) {
@@ -22,9 +30,10 @@
 
 .product-image-container {
   position: relative;
+  flex-shrink: 0;
   padding-top: 125%;
   overflow: hidden;
-  background: var(--ll-surface);
+  background: var(--ll-bg);
   border-radius: 8px;
 }
 
@@ -35,15 +44,19 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   border-radius: 8px;
+  background-color: var(--ll-bg);
   transform: scale(1);
   transition: transform 0.45s var(--ll-ease);
   will-change: transform;
 }
+
 .add-button {
   position: absolute;
   bottom: 12px;
   right: 12px;
+  z-index: 2;
   opacity: 0;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.95);
@@ -60,12 +73,14 @@
   border-radius: 4px;
   backdrop-filter: blur(4px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
   &:hover {
     background: rgba(255, 255, 255, 1);
     border-color: rgba(0, 0, 0, 0.4);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
   }
+
   .material-symbols-outlined {
     font-size: 20px;
     font-weight: 400;
@@ -89,22 +104,40 @@
   backdrop-filter: blur(4px);
 }
 .product-info {
-  padding: 12px 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 12px 2px 0;
+  min-height: 0;
+  text-align: left;
 }
+
 .product-name {
   font-size: 14px;
   font-weight: 400;
-  margin: 0 0 8px 0;
-  color: #000;
-  letter-spacing: 0.3px;
+  line-height: 1.4;
+  margin: 0 0 8px;
+  color: var(--ll-text);
+  letter-spacing: 0.02em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  min-height: calc(1.4em * 2);
 }
+
 .product-price {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 6px;
-  margin-bottom: 6px;
+  justify-content: flex-start;
+  gap: 6px 8px;
+  margin: 0;
+  margin-top: auto;
+  padding-top: 4px;
   font-size: 13px;
+  line-height: 1.3;
 }
 .price-label {
   font-size: 10px;
@@ -139,6 +172,7 @@
     width: 36px;
     height: 36px;
   }
+
   .add-button .material-symbols-outlined {
     font-size: 18px;
   }

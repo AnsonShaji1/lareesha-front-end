@@ -1,0 +1,124 @@
+@import '../home-section.scss';
+
+.home-categories .home-section__header {
+  gap: 0;
+}
+
+.home-categories__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 28px 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.home-categories__item {
+  flex: 0 0 auto;
+  width: clamp(96px, 18vw, 132px);
+}
+
+.home-categories__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s var(--ll-ease);
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-3px);
+
+      .home-categories__media {
+        border-color: var(--ll-gold-border);
+        box-shadow: 0 8px 20px rgba(107, 74, 26, 0.12);
+      }
+
+      .home-categories__image {
+        transform: scale(1.06);
+      }
+
+      .home-categories__label {
+        color: var(--ll-gold);
+      }
+    }
+  }
+}
+
+.home-categories__media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--ll-surface-2);
+  border: 1px solid var(--ll-border);
+  box-shadow: var(--ll-shadow-sm);
+  transition:
+    border-color 0.25s var(--ll-ease),
+    box-shadow 0.25s var(--ll-ease);
+}
+
+.home-categories__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transform: scale(1);
+  transition: transform 0.45s var(--ll-ease);
+}
+
+.home-categories__label {
+  display: block;
+  width: 100%;
+  font-family: var(--ll-font-body);
+  font-size: var(--ll-text-xs);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: var(--ll-text);
+  transition: color 0.25s var(--ll-ease);
+}
+
+.home-categories__status {
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+  font-size: var(--ll-text-sm);
+  color: var(--ll-muted);
+}
+
+@media (min-width: 900px) {
+  .home-categories__grid {
+    gap: 32px 28px;
+  }
+
+  .home-categories__item {
+    width: 132px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-categories__grid {
+    gap: 22px 16px;
+  }
+
+  .home-categories__item {
+    width: clamp(88px, 28vw, 108px);
+  }
+
+  .home-categories__label {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+}
