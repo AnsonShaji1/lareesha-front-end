@@ -67,6 +67,10 @@
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 12px;
+
+  @media (min-width: 901px) {
+    margin-bottom: 28px;
+  }
 }
 
 .category-page__header {
@@ -112,6 +116,10 @@
 
   ::ng-deep .product-header {
     margin-bottom: 12px;
+
+    @media (min-width: 901px) {
+      margin-bottom: 28px;
+    }
   }
 
   ::ng-deep .product-grid.product-grid--cols-3 {
