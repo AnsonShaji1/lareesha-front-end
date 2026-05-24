@@ -174,20 +174,30 @@
 }
 
 .nav-collections__dropdown {
-  position: absolute;
-  top: 100%;
-  left: 50%;
+  position: fixed;
+  top: var(--app-header-height);
+  left: 0;
+  right: 0;
   z-index: 1200;
-  width: 100vw;
-  padding-top: 8px;
+  width: 100%;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateX(-50%) translateY(6px);
+  transform: translateY(6px);
   transition:
     opacity 0.22s var(--ll-ease),
     transform 0.22s var(--ll-ease),
     visibility 0.22s;
+
+  /* Invisible hover bridge so the menu stays open when moving from the nav link */
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 10px;
+  }
 }
 
 .nav-collections__panel {
@@ -271,7 +281,7 @@
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 .nav-collections--open .collections-btn {
